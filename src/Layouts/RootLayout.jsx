@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import Navbar from '../components/navbar/Navbar';
 import { Outlet } from 'react-router';
 import { Spinner } from "@/components/ui/spinner"
@@ -9,13 +9,6 @@ import Footer from '../components/footer/Footer';
 
 const RootLayout = () => {
     const { loading } = useContext(AuthContext);
-    if (loading) {
-        return (
-            <div className='min-h-screen flex justify-center items-center'>
-                <Spinner />
-            </div>
-        );
-    }
 
     return (
 
@@ -23,8 +16,14 @@ const RootLayout = () => {
             <header>
                 <Navbar></Navbar>
             </header>
-            <main className='min-h-[calc(100vh-200px)]'>
-                <Outlet></Outlet>
+            <main className=' min-h-[calc(100vh-200px)]'>
+                {loading ? (
+                    <div className='flex justify-center items-center h-full'>
+                        <Spinner />
+                    </div>
+                ) : (
+                    <Outlet></Outlet>
+                )}
             </main>
             <footer>
                 <Footer></Footer>

@@ -3,28 +3,21 @@ import React from 'react';
 import { NavLink } from 'react-router';
 
 const Footer = () => {
-  const links = [
-    <>
-      <NavLink to="/" className="hover:text-blue-500 transition-colors">Home</NavLink>
-      <NavLink to="/addTransaction" className="hover:text-blue-500 transition-colors">Browse Books</NavLink>
-      <NavLink to="/dashboard" className="hover:text-blue-500 transition-colors">Dashboard</NavLink>
-      <NavLink to="/login" className="hover:text-blue-500 transition-colors">Login / Register</NavLink>
-    </>
-  ];
+
   return (
     <footer className="bg-slate-950 text-slate-200 p-6 border-t border-slate-800">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-
-          {/* Section 1: Brand & Quick Links */}
           <div className="flex flex-col space-y-4">
             <h2 className="text-2xl font-bold text-white mb-2">BookLibrary</h2>
             <nav className="flex flex-col space-y-2 text-sm text-slate-400">
-              {links}
+              <NavLink to="/" className="hover:text-blue-500 transition-colors">Home</NavLink>
+              <NavLink to="/addTransaction" className="hover:text-blue-500 transition-colors">Browse Books</NavLink>
+              <NavLink to="/dashboard" className="hover:text-blue-500 transition-colors">Dashboard</NavLink>
+              <NavLink to="/login" className="hover:text-blue-500 transition-colors">Login / Register</NavLink>
             </nav>
           </div>
 
-          {/* Section 2: Contact Details */}
           <div className="flex flex-col space-y-4">
             <h3 className="text-lg font-semibold text-white">Contact Us</h3>
             <div className="space-y-3 text-sm text-slate-400">
@@ -43,7 +36,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Section 3: Social Icons */}
           <div className="flex flex-col space-y-4">
             <h3 className="text-lg font-semibold text-white">Follow Us</h3>
             <p className="text-sm text-slate-400 mb-2">
@@ -66,7 +58,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright */}
         <div className="border-t border-slate-800 pt-8 text-center">
           <p className="text-sm text-slate-500">
             &copy; {new Date().getFullYear()} BookLibrary. All rights reserved.
