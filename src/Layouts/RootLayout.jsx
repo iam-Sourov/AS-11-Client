@@ -3,6 +3,7 @@ import Navbar from '../components/navbar/Navbar';
 import { Outlet } from 'react-router';
 import { Spinner } from "@/components/ui/spinner"
 import { AuthContext } from '../contexts/AuthContext';
+import Footer from '../components/footer/Footer';
 
 
 
@@ -10,12 +11,14 @@ const RootLayout = () => {
     const { loading } = useContext(AuthContext);
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-xl">
-                <Spinner></Spinner>
+            <div className='min-h-screen flex justify-center items-center'>
+                <Spinner />
             </div>
         );
     }
+
     return (
+
         <div className='min-h-screen '>
             <header>
                 <Navbar></Navbar>
@@ -23,10 +26,11 @@ const RootLayout = () => {
             <main className='min-h-[calc(100vh-200px)]'>
                 <Outlet></Outlet>
             </main>
-            {/* <footer>
+            <footer>
                 <Footer></Footer>
-            </footer> */}
+            </footer>
         </div>
+
     );
 };
 export default RootLayout;
