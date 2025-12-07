@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -17,7 +17,7 @@ import useAxios from '../../hooks/useAxios';
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   password: z.string()
     .min(6, "Password must be at least 6 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -50,29 +50,22 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     const toastId = toast.loading("Creating Account...");
-
     try {
       let photoURL = null;
       if (data.image) {
         const formData = new FormData();
         formData.append("image", data.image);
-
-
         const res = await axios.post(
           `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMG_BB_API_KEY}`,
           formData
         );
         photoURL = res.data.data.display_url;
       }
-
       await signUp(data.email, data.password);
-
-
       await updateUser({
         displayName: data.name,
         photoURL: photoURL,
       });
-
       const userInfo = {
         name: data.name,
         email: data.email,
@@ -80,8 +73,7 @@ const Register = () => {
         role: "user",
       };
       const dbResponse = await useAxios.post("/users", userInfo);
-
-      if (dbResponse.data.insertedId) {
+      if (dbResponse?.data?.insertedId) {
         toast.success("Registration Successful!", { id: toastId });
         navigate("/");
       } else {
@@ -90,7 +82,7 @@ const Register = () => {
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Registration failed", { id: toastId });
+      toast.error(err?.response?.data?.message || err.message || "Registration failed", { id: toastId });
     }
   };
 
@@ -153,7 +145,7 @@ const Register = () => {
                 <div className="h-12 w-12 rounded-full overflow-hidden border bg-gray-100 flex items-center justify-center">
                   {imagePreview ? <img src={imagePreview} className="h-full w-full object-cover" alt="Preview" /> : <Upload className="text-gray-400 h-6 w-6" />}
                 </div>
-                
+
                 <Input type="file" accept="image/*" onChange={handleImageChange} className="cursor-pointer" />
               </div>
             </div>

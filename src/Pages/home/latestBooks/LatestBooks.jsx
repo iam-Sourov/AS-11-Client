@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardFooter, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
-import useAxios from '../../../hooks/useAxios';
 import { Spinner } from '@/components/ui/spinner';
 import { Container, ShoppingCart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const LatestBooks = () => {
   const { data: books = [], isLoading, isError, error, refetch } = useQuery({
@@ -28,7 +28,7 @@ const LatestBooks = () => {
     return <div className="text-red-500 text-center mt-10">Error: {error.message}</div>;
   }
   return (
-   
+
     <section className=" py-12 px-4">
       <h2 className="text-3xl font-bold mb-8 text-center">Latest Books</h2>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 container mx-auto">
@@ -38,7 +38,7 @@ const LatestBooks = () => {
               <img
                 src={book.image_url}
                 alt={book.title}
-                className="w-full rounded-2xl h-56 object-cover transition-transform duration-500 group-hover:scale-105"/>
+                className="w-full rounded-2xl h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute top-3 right-3">
                 <span className={`px-2 py-1 text-xs font-bold rounded-md uppercase text-white ${book.stock_status === 'in stock' ? 'bg-green-600' : 'bg-red-500'}`}>
                   {book.stock_status}

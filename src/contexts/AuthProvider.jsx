@@ -3,11 +3,9 @@ import { AuthContext } from './AuthContext';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/firebase.config';
 
-
-
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-        const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const signUp = (email, password) => {
         setLoading(true);
@@ -29,13 +27,21 @@ const AuthProvider = ({ children }) => {
     };
 
     const GoogleLogin = () => {
+        setLoading(true);
         return signInWithPopup(auth, googleProvider);
     };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            setLoading(false); // 
+            if (currentUser) {
+                // Get token if needed
+                // const token = await currentUser.getIdToken();
+                // localStorage.setItem('access-token', token);
+            } else {
+                // localStorage.removeItem('access-token');
+            }
+            setLoading(false);
         });
         return () => unsubscribe();
     }, []);

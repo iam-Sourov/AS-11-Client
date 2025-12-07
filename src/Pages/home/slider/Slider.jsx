@@ -5,6 +5,8 @@ import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../hooks/useAxios";
 
+
+
 const Slider = () => {
   const { data: books = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['books'],
@@ -22,7 +24,7 @@ const Slider = () => {
       </h2>
 
       <Marquee pauseOnHover speed={20} className="space-x-4">
-        {books.map((book,indx) => (
+        {books.map((book, indx) => (
           <div
             key={indx}
             className="w-[350px] h-[270px]  shadow-lg rounded-2xl p-4 flex flex-col justify-between hover:scale-105 transition-all border"
@@ -44,7 +46,7 @@ const Slider = () => {
       </Marquee>
 
       <Marquee pauseOnHover reverse speed={20} className="space-x-6 mt-10">
-        {books.map((book,index) => (
+        {books.map((book, index) => (
           <div
             key={index + "reverse"}
             className="w-[350px] h-[270px] shadow-lg rounded-2xl p-4 flex flex-col justify-between hover:scale-105 transition-all border"

@@ -1,16 +1,15 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from "sonner"
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { AuthContext } from '../../contexts/AuthContext';
-import useAxios from '../../hooks/useAxios';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const Login = () => {
   const { LogIn, GoogleLogin } = useContext(AuthContext); 
@@ -19,7 +18,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-
+const axios = useAxiosSecure()
   const onLogin = async ({ email, password }) => {
     try {
       await LogIn(email, password);
@@ -27,7 +26,7 @@ const Login = () => {
       navigate(from, { replace: true });
 
     } catch (err) {
-     
+    
       console.error(err);
       toast.error("Invalid Email or Password");
     }
@@ -43,8 +42,7 @@ const Login = () => {
         photoURL: result.user.photoURL,
         role: "user",
       };
-
-      await useAxios.post("/users", userInfo);
+      await axios.post("/users", userInfo);
       toast.success("Google Login Successful!");
       navigate(from, { replace: true });
 
