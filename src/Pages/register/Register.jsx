@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { AuthContext } from '../../contexts/AuthContext';
 import useAxios from '../../hooks/useAxios';
 
+
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.email("Invalid email address"),

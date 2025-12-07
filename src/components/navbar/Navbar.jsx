@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import {Spinner} from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/spinner"
 import {
     Menubar,
     MenubarMenu,
@@ -26,9 +26,7 @@ import { Menu, LogOut } from 'lucide-react'; // Icons
 
 const Navbar = () => {
     const { user, LogOut } = useContext(AuthContext);
-
     const [isOpen, setIsOpen] = useState(false);
-
     const getLinkClass = ({ isActive }) =>
         `cursor-pointer hover:text-primary transition ${isActive ? "text-blue-500 font-bold" : "text-sm font-medium"
         }`;
@@ -42,14 +40,12 @@ const Navbar = () => {
             .catch((err) => toast.error(err.message));
     };
     return (
-        <nav className="w-full flex justify-between items-center backdrop-blur-md border-b p-3 sticky top-0 z-50 bg-background/80">
-
+        <nav className=" w-full flex justify-between items-center backdrop-blur-md border-b p-3 sticky top-0 z-50 bg-background/80">
             <Link to="/" className="text-xl font-bold flex items-center gap-2">
                 BookCourier
             </Link>
-
             <div className="hidden md:flex justify-center items-center">
-                <Menubar className="border-2 rounded-xl flex items-center space-x-6 font-medium px-4 py-2">
+                <Menubar className="border-2 rounded-xl flex justify-center items-center space-x-6 font-medium ">
                     <MenubarMenu>
                         <MenubarTrigger asChild className="cursor-pointer">
                             <NavLink to="/" className={getLinkClass}>Home</NavLink>
@@ -96,7 +92,6 @@ const Navbar = () => {
                                 {user?.email?.charAt(0).toUpperCase() || "U"}
                             </AvatarFallback>
                         </Avatar>
-
                         <Button
                             variant="destructive"
                             size="sm"
@@ -114,33 +109,26 @@ const Navbar = () => {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="right" className="overflow-y-auto">
-                            {/* ✅ allows scrolling so content WON’T disappear */}
                             <SheetHeader>
                                 <SheetTitle className="text-left">Menu</SheetTitle>
                             </SheetHeader>
-
                             <div className="flex flex-col gap-6 mt-8">
-
                                 <NavLink to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium">
                                     Home
                                 </NavLink>
-
-                                <NavLink to="/books" onClick={() => setIsOpen(false)} className="text-lg font-medium">
-                                    Books
+                                <NavLink to="/all-books" onClick={() => setIsOpen(false)} className="text-lg font-medium">
+                                    AllBooks
                                 </NavLink>
-
                                 {user && (
                                     <NavLink to="/dashboard" onClick={() => setIsOpen(false)} className="text-lg font-medium">
                                         Dashboard
                                     </NavLink>
                                 )}
-
                                 {!user && (
                                     <>
                                         <NavLink to="/login" onClick={() => setIsOpen(false)} className="text-lg font-medium">
                                             Login
                                         </NavLink>
-
                                         <NavLink to="/register" onClick={() => setIsOpen(false)} className="text-lg font-medium">
                                             Register
                                         </NavLink>
@@ -150,8 +138,7 @@ const Navbar = () => {
                                     <Button
                                         variant="destructive"
                                         onClick={handleSignOut}
-                                        className="w-full flex items-center gap-2"
-                                    >
+                                        className="w-full flex items-center gap-2">
                                         <LogOut size={16} /> Logout
                                     </Button>
                                 )}

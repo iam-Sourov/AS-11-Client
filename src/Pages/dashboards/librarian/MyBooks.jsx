@@ -4,11 +4,11 @@ import { Link } from 'react-router';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit } from 'lucide-react';
-import { AuthContext } from '../../contexts/AuthContext';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { AuthContext } from '../../../contexts/AuthContext';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const MyBooks = () => {
-    const { user } = useContext(AuthContext) ; // Get logged in user
+    const { user } = useContext(AuthContext);
     const axiosInstance = useAxiosSecure();
 
     const { data: books = [] } = useQuery({
@@ -18,7 +18,6 @@ const MyBooks = () => {
             return res.data;
         }
     });
-
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">My Added Books</h2>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import AppSidebar from "../components/dashboard/app-sidebar"
+import AppSidebar from "../components/sidebar/app-sidebar"
 import { Outlet } from "react-router";
 
 const DashboardLayout = () => {

@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
-import { AuthContext } from '../../contexts/AuthContext';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { AuthContext } from '../../../contexts/AuthContext';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
-const LibrarianOrders = () => {
+const Orders = () => {
   const {user}= useContext(AuthContext)
   const axiosInstance = useAxiosSecure();
 
@@ -77,4 +77,4 @@ const LibrarianOrders = () => {
   );
 };
 
-export default LibrarianOrders;
+export default Orders;

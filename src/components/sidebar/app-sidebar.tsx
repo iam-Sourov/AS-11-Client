@@ -69,7 +69,7 @@ function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {(role === "librarian" || role === "admin") && (
+        {role === "librarian" && (
           <SidebarGroup>
             <SidebarGroupLabel>Librarian Panel</SidebarGroupLabel>
             <SidebarGroupContent>

@@ -3,13 +3,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { Skeleton } from "@/components/ui/skeleton"
+import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 import useAxios from '../../hooks/useAxios';
+import { Search } from 'lucide-react';
 
 
 const AllBooks = () => {
   const [selectedBook, setSelectedBook] = useState(null);
+  const [search, setSearch] = useState('')
 
   const { data: books = [], isLoading, isError, error } = useQuery({
     queryKey: ['books'],
@@ -19,20 +22,33 @@ const AllBooks = () => {
     }
   });
 
+  const searcedBook = books.filter((b) => b.title.toLowerCase().includes(search.toLowerCase()) || b.author.toLowerCase().includes(search.toLowerCase()))
+  
   const handlePlaceOrder = () => {
     console.log("Order placed for book:", selectedBook);
     toast.success(`Ordered: ${selectedBook.title}`);
     setSelectedBook(null);
   };
 
-  if (isLoading) return <div className="p-8 text-center">Loading books...</div>;
+  if (isLoading) return <div className="p-8 flex items-center justify-center text-center"><Spinner></Spinner></div>;
   if (isError) return <div className="p-8 text-red-500 text-center">Error: {error.message}</div>;
 
   return (
     <div>
       <h1 className='text-3xl font-bold mt-6 mb-4 text-center'>All Books</h1>
+      <div className="flex justify-center mb-6">
+        <div className="relative w-full max-w-md ">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4" />
+          <Input
+            type="search"
+            placeholder="Search by title or author..."
+            className="pl-9 rounded-full border  border-gray-600 focus-visible:ring-offset-0"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)} />
+        </div>
+      </div>
       <div className="p-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {isLoading ? <Skeleton></Skeleton> : <>{books.map((b) => (
+        {searcedBook.map((b) => (
           <Card key={b._id} className="shadow-lg rounded-2xl overflow-hidden flex flex-col h-full">
             <img src={b.image_url} alt={b.title} className="w-full h-52 object-cover" />
             <CardContent className="p-4 flex flex-col grow">
@@ -42,7 +58,7 @@ const AllBooks = () => {
               <Button className="mt-4 w-full" onClick={() => setSelectedBook(b)}>View Details</Button>
             </CardContent>
           </Card>
-        ))}</>}
+        ))}
         <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
           <DialogContent className="rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
             {selectedBook && (

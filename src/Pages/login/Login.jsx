@@ -24,7 +24,6 @@ const axios = useAxiosSecure()
       await LogIn(email, password);
       toast.success("Login Successful!");
       navigate(from, { replace: true });
-
     } catch (err) {
     
       console.error(err);

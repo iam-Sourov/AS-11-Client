@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -6,9 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import useAxiosSecure from '../../hooks/useAxiosSecure';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import { AuthContext } from '../../../contexts/AuthContext';
+import useRole from '../../../hooks/useRole';
 
 const AddBook = () => {
+    const { user } = useContext(AuthContext)
+    const [role] = useRole();
+    console.log(role)
     const { register, handleSubmit, setValue, reset } = useForm();
     const axiosSecure = useAxiosSecure();
 
@@ -40,36 +45,31 @@ const AddBook = () => {
             toast.error("Failed to add book", { id: toastId });
         }
     };
-    console.log("Sssss")
 
     return (
-        <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-md">
+        <div className="max-w-xl mx-auto p-6 rounded-xl shadow-md">
             <h2 className="text-2xl font-bold mb-6">Add New Book</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
                 <div>
-                    <Label>Book Title</Label>
+                    <Label className="mb-2">Book Title</Label>
                     <Input {...register("title", { required: true })} placeholder="Enter book name" />
                 </div>
-
                 <div>
-                    <Label>Author Name</Label>
-                    <Input {...register("author", { required: true })} placeholder="Author name" />
+                    <Label className="mb-2">Author Name</Label>
+                    <Input {...register("author", { required: true })} defaultValue={user?.displayName} placeholder="Author name" />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <Label>Price (USD)</Label>
+                        <Label className="mb-2">Price (USD)</Label>
                         <Input type="number" step="0.01" {...register("price", { required: true })} />
                     </div>
                     <div>
-                        <Label>Quantity</Label>
+                        <Label className="mb-2">Quantity</Label>
                         <Input type="number" {...register("quantity", { required: true })} />
                     </div>
                 </div>
-
                 <div>
-                    <Label>Status</Label>
+                    <Label className="mb-2">Status</Label>
                     <Select onValueChange={(val) => setValue("status", val)} defaultValue="published">
                         <SelectTrigger>
                             <SelectValue placeholder="Select status" />
@@ -82,7 +82,7 @@ const AddBook = () => {
                 </div>
 
                 <div>
-                    <Label>Book Cover Image</Label>
+                    <Label className="mb-2">Book Cover Image</Label>
                     <Input type="file" {...register("image", { required: true })} className="cursor-pointer" />
                 </div>
 
