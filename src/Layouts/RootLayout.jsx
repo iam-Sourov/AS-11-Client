@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import Navbar from '../components/navbar/Navbar';
 import { Outlet } from 'react-router';
-import { Spinner } from "@/components/ui/spinner"
+import { Skeleton } from "@/components/ui/skeleton"
 import { AuthContext } from '../contexts/AuthContext';
 import Footer from '../components/footer/Footer';
 
@@ -10,7 +10,7 @@ const RootLayout = () => {
 
     if (loading) {
         return <div className="min-h-screen bg-slate-700/60 backdrop-blur-3xl flex items-center justify-center text-xl">
-            <Spinner></Spinner>
+            <Skeleton></Skeleton>
         </div>
     }
     return (

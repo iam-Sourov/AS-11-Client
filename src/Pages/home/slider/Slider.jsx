@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../hooks/useAxios";
-
-
+import {Skeleton} from "@/components/ui/skeleton"
 
 const Slider = () => {
   const { data: books = [], isLoading, isError, error, refetch } = useQuery({
@@ -15,8 +14,7 @@ const Slider = () => {
       return res.data;
     }
   });
-  console.log(books);
-
+ 
   return (
     <section className="w-full py-12 overflow-hidden ">
       <h2 className="text-3xl font-bold text-center mb-8">
@@ -38,7 +36,7 @@ const Slider = () => {
             <h3 className="font-bold text-lg mt-2">{book.title}</h3>
             <p className="text-sm text-gray-600 line-clamp-2">{book.description}</p>
 
-            <Link href="/all-books">
+            <Link to="/all-books">
               <Button className="w-full mt-3">Explore Books</Button>
             </Link>
           </div>

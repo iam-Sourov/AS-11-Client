@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from "framer-motion";
 
-const BookLibrary = () => {
+const BookCourier = () => {
   return (
     <section className="w-full px-4 py-10 rounded-2xl shadow-inner">
       <h2 className="text-3xl font-bold text-center mb-8">Why Choose BookCourier?</h2>
@@ -34,4 +34,4 @@ const BookLibrary = () => {
   );
 };
 
-export default BookLibrary;
+export default BookCourier;

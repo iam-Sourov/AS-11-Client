@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
+import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner';
 import useAxios from '../../hooks/useAxios';
 
@@ -21,8 +22,6 @@ const AllBooks = () => {
   const handlePlaceOrder = () => {
     console.log("Order placed for book:", selectedBook);
     toast.success(`Ordered: ${selectedBook.title}`);
-
-
     setSelectedBook(null);
   };
 
@@ -33,7 +32,7 @@ const AllBooks = () => {
     <div>
       <h1 className='text-3xl font-bold mt-6 mb-4 text-center'>All Books</h1>
       <div className="p-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {books.map((b) => (
+        {isLoading ? <Skeleton></Skeleton> : <>{books.map((b) => (
           <Card key={b._id} className="shadow-lg rounded-2xl overflow-hidden flex flex-col h-full">
             <img src={b.image_url} alt={b.title} className="w-full h-52 object-cover" />
             <CardContent className="p-4 flex flex-col grow">
@@ -43,7 +42,7 @@ const AllBooks = () => {
               <Button className="mt-4 w-full" onClick={() => setSelectedBook(b)}>View Details</Button>
             </CardContent>
           </Card>
-        ))}
+        ))}</>}
         <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
           <DialogContent className="rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
             {selectedBook && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import Map from './map/Map';
 import LatestBooks from './latestBooks/LatestBooks';
-import BookLibrary from './statics/BookLibrary';
+import BookCourier from './statics/BookCourier';
 import Stats from './statics/Stats';
 import NewsLetter from './statics/NewsLetter';
 import Slider from './slider/Slider';
@@ -16,7 +16,7 @@ const Home = () => {
       <Container>
         <LatestBooks></LatestBooks>
         <Map></Map>
-        <BookLibrary></BookLibrary>
+        <BookCourier></BookCourier>
         <NewsLetter></NewsLetter>
         <Stats></Stats>
       </Container>

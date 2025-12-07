@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import {Spinner} from "@/components/ui/spinner"
 import {
     Menubar,
     MenubarMenu,
@@ -24,8 +25,8 @@ import { toast } from 'sonner';
 import { Menu, LogOut } from 'lucide-react'; // Icons
 
 const Navbar = () => {
-    const { user, LogOut } = React.useContext(AuthContext);
-    console.log(user)
+    const { user, LogOut } = useContext(AuthContext);
+
     const [isOpen, setIsOpen] = useState(false);
 
     const getLinkClass = ({ isActive }) =>
@@ -40,8 +41,6 @@ const Navbar = () => {
             })
             .catch((err) => toast.error(err.message));
     };
-
-
     return (
         <nav className="w-full flex justify-between items-center backdrop-blur-md border-b p-3 sticky top-0 z-50 bg-background/80">
 
