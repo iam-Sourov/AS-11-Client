@@ -10,6 +10,7 @@ import PrivateRoute from "./Private/PrivateRoutes";
 import MyBooks from "../Pages/dashboards/librarian/MyBooks";
 import Orders from "../Pages/dashboards/librarian/Orders";
 import ManageBooks from "../Pages/dashboards/admin/ManageBooks";
+import MyOrders from "../Pages/dashboards/user/MyOrders";
 
 
 const router = createBrowserRouter([
@@ -60,19 +61,14 @@ const router = createBrowserRouter([
                     <Orders></Orders>
                 </PrivateRoute>,
             },
+           
             {
-                path: "manage-books",
-                element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
-                    <ManageBooks></ManageBooks>
+                path: "my-orders",
+                element: <PrivateRoute >
+                    <MyOrders></MyOrders>
                 </PrivateRoute>,
             },
-            // {
-            //     path: "manage-books",
-            //     element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
-            //         <ManageBooks></ManageBooks>
-            //     </PrivateRoute>,
-            // },
-            // {
+
             //     path: "my-profile",
             //     element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
             //         <MyBooks></MyBooks>

@@ -8,14 +8,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
-import useAxios from '../../hooks/useAxios';
 import { Search } from 'lucide-react';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { AuthContext } from '../../contexts/AuthContext';
 
 
 
 const AllBooks = () => {
-  const { user, LogOut } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+  const { user } = useContext(AuthContext);
   const [selectedBook, setSelectedBook] = useState(null);
   const [orderBook, setOrderBook] = useState(null);
   const [search, setSearch] = useState('');
@@ -26,7 +27,7 @@ const AllBooks = () => {
   const { data: books = [], isLoading, isError, error } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
-      const res = await useAxios.get('/books');
+      const res = await axiosSecure.get('/books');
       return res.data;
     }
   });
@@ -61,11 +62,17 @@ const AllBooks = () => {
       date: new Date().toISOString()
     };
     try {
-      const {result} = await useAxios.post('/orders', orderData);
-      if (result.insertedId === null) {
+      const res = await axiosSecure.post('/orders', orderData);
+      if (res.data.insertedId === null) {
         toast.error("You have already ordered this book.");
         setIsOrdering(false);
         return;
+      }
+      if (res.data.insertedId) {
+        toast.success(`Order placed successfully for: ${orderBook.title}`);
+        setOrderBook(null);
+        setPhone('');
+        setAddress('');
       }
       toast.success(`Order placed successfully for: ${orderBook.title}`);
       setOrderBook(null);

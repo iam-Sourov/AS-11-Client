@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { AuthContext } from '../../contexts/AuthContext';
-import useAxios from '../../hooks/useAxios';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 
 const registerSchema = z.object({
@@ -27,6 +27,7 @@ const registerSchema = z.object({
 });
 
 const Register = () => {
+  const axiosSecure = useAxiosSecure();
   const { signUp, updateUser, GoogleLogin } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -73,7 +74,7 @@ const Register = () => {
         photoURL: photoURL,
         role: "user",
       };
-      const dbResponse = await useAxios.post("/users", userInfo);
+      const dbResponse = await axiosSecure.post("/users", userInfo);
       if (dbResponse?.data?.insertedId) {
         toast.success("Registration Successful!", { id: toastId });
         navigate("/");
@@ -97,7 +98,7 @@ const Register = () => {
         photoURL: result.user.photoURL,
         role: "user",
       };
-      await useAxios.post("/users", userInfo);
+      await axiosSecure.post("/users", userInfo);
 
       toast.success("Google Login Successful!");
       navigate(from, { replace: true });

@@ -1,20 +1,22 @@
 import React from "react";
 import { Marquee } from "@/components/ui/marquee";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import useAxios from "../../../hooks/useAxios";
-import {Skeleton} from "@/components/ui/skeleton"
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Slider = () => {
+  const axiosSecure = useAxiosSecure();
   const { data: books = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
-      const res = await useAxios.get('/books');
+      const res = await axiosSecure.get('/books');
       return res.data;
     }
   });
- 
+  if (isLoading) return <Spinner></Spinner>
+
   return (
     <section className="w-full py-12 overflow-hidden ">
       <h2 className="text-3xl font-bold text-center mb-8">

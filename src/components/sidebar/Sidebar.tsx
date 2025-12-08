@@ -23,7 +23,7 @@ import useRole from "../../hooks/useRole";
 
 function AppSidebar() {
   const [role] = useRole();
-  console.log(role)
+  console.log(role);
 
   const adminItems = [
     { title: "Manage Users", to: "/dashboard/manage-users", icon: Users },
@@ -36,7 +36,8 @@ function AppSidebar() {
     { title: "Manage Orders", to: "/dashboard/orders", icon: ShoppingBag },
   ];
 
-  const commonItems = [
+  const userItems = [
+    { title: "My-Orders", to: "/dashboard/my-orders", icon: ShoppingBag },
     { title: "Home", to: "/", icon: Home },
     { title: "Profile", to: "/dashboard/profile", icon: LayoutDashboard },
   ];
@@ -93,12 +94,36 @@ function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
+        {role === "user" && (
+          <SidebarGroup>
+            <SidebarGroupLabel>User Panel</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {userItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          isActive ? "bg-accent text-accent-foreground" : ""
+                        }
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {commonItems.map((item) => (
+              {userItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.to}>
@@ -110,7 +135,7 @@ function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       <SidebarFooter />

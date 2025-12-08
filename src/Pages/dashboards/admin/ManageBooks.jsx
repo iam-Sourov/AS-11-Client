@@ -4,19 +4,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Trash2 } from 'lucide-react';
 import Swal from 'sweetalert2'; 
-import useAxios from '../../../hooks/useAxios';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const ManageBooks = () => {
-  // const axiosInstance = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
 
   const { data: books = [], refetch } = useQuery({
     queryKey: ['all-books'],
     queryFn: async () => {
-      const res = await useAxios.get('/books');
+      const res = await axiosSecure.get('/books');
       return res.data;
     }
   });
-  console.log(books);
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -29,7 +28,7 @@ const ManageBooks = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await useAxios.delete(`/books/${id}`);
+          await axiosSecure.delete(`/books/${id}`);
           Swal.fire("Deleted!", "Book and orders have been deleted.", "success");
           refetch();
         } catch (error) {

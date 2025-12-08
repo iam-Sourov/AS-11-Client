@@ -2,15 +2,16 @@ import React from 'react';
 import { Card, CardFooter, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@/components/ui/spinner';
-import { Container, ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const LatestBooks = () => {
-  const { data: books = [], isLoading, isError, error, refetch } = useQuery({
+  const axiosSecure = useAxiosSecure();
+  const { data: books = [], isLoading, isError, error } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
-      const res = await useAxios.get('/books');
+      const res = await axiosSecure.get('/books');
       return res.data;
     }
 
