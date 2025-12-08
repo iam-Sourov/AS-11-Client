@@ -11,6 +11,7 @@ import MyBooks from "../Pages/dashboards/librarian/MyBooks";
 import Orders from "../Pages/dashboards/librarian/Orders";
 import ManageBooks from "../Pages/dashboards/admin/ManageBooks";
 import MyOrders from "../Pages/dashboards/user/MyOrders";
+import MyProfile from "../Pages/myProfile/MyProfile";
 
 
 const router = createBrowserRouter([
@@ -61,19 +62,18 @@ const router = createBrowserRouter([
                     <Orders></Orders>
                 </PrivateRoute>,
             },
-           
             {
                 path: "my-orders",
                 element: <PrivateRoute >
                     <MyOrders></MyOrders>
                 </PrivateRoute>,
             },
-
-            //     path: "my-profile",
-            //     element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
-            //         <MyBooks></MyBooks>
-            //     </PrivateRoute>,
-            // }
+            {
+                path: "my-profile",
+                element: <PrivateRoute>
+                    <MyProfile></MyProfile>
+                </PrivateRoute>,
+            }
         ]
     },
     {

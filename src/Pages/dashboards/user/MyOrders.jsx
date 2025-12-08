@@ -50,7 +50,7 @@ const MyOrders = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Cover</TableHead>
+              <TableHead >Cover</TableHead>
               <TableHead>Book Title</TableHead>
               <TableHead>Order Date</TableHead>
               <TableHead>Price</TableHead>
@@ -77,18 +77,18 @@ const MyOrders = () => {
                   </span>
                 </TableCell>
                 <TableCell className="text-right flex justify-end gap-2">
-                  {/* {order.status !== 'cancelled' && order.paymentStatus !== 'paid' && (
+                  {order.status !== 'cancelled' && order.paymentStatus !== 'paid' && (
                     <Link to={`/dashboard/payment/${order._id}`}>
                       <Button size="sm" className="bg-green-600 hover:bg-green-700">Pay Now</Button>
                     </Link>
-                  )} */}
+                  )}
                   {order.status === 'pending' && (
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleCancel(order._id)}>
-                      Cancel
-                    </Button>
+                    // <Button
+                    //   size="sm"
+                    //   variant="destructive"
+                    //   onClick={() => handleCancel(order._id)}>
+                    //   Cancel
+                    // </Button>
                   )}
                 </TableCell>
               </TableRow>

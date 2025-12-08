@@ -37,9 +37,9 @@ function AppSidebar() {
   ];
 
   const userItems = [
-    { title: "My-Orders", to: "/dashboard/my-orders", icon: ShoppingBag },
     { title: "Home", to: "/", icon: Home },
-    { title: "Profile", to: "/dashboard/profile", icon: LayoutDashboard },
+    { title: "My-Orders", to: "/dashboard/my-orders", icon: ShoppingBag },
+    { title: "My-Profile", to: "/dashboard/my-profile", icon: LayoutDashboard },
   ];
 
   return (
@@ -137,8 +137,6 @@ function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup> */}
       </SidebarContent>
-
-      <SidebarFooter />
     </Sidebar>
   );
 }
