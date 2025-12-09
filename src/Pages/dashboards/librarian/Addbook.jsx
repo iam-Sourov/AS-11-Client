@@ -30,11 +30,10 @@ const AddBook = () => {
             const bookData = {
                 title: data.title,
                 author: data.author,
-                price_USD: parseFloat(data.price),
-                discounted_price_USD: parseFloat(data.price),
+                price: parseFloat(data.price),
                 status: data.status,
                 image_url: imageUrl,
-                medium_description: data.description
+                description: data.description
             };
             await axiosSecure.post('/books', bookData);
             toast.success("Book Added Successfully", { id: toastId });

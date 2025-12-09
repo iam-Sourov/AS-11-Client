@@ -16,6 +16,7 @@ const LatestBooks = () => {
     }
 
   });
+  console.log(books)
   const latestBooks = books.sort((a, b) => new Date(b.rating) - new Date(a.rating)).slice(0, 8);
 
   if (isLoading) {
@@ -37,14 +38,10 @@ const LatestBooks = () => {
           <Card key={book._id} className="flex flex-col h-full rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
             <div className="relative group overflow-hidden">
               <img
-                src={book.image_url}
+                src={book.image}
                 alt={book.title}
                 className="w-full rounded-2xl h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
-              <div className="absolute top-3 right-3">
-                <span className={`px-2 py-1 text-xs font-bold rounded-md uppercase text-white ${book.stock_status === 'in stock' ? 'bg-green-600' : 'bg-red-500'}`}>
-                  {book.stock_status}
-                </span>
-              </div>
+              
             </div>
             <CardContent className="p-5 grow">
               <Button size="sm" className="gap-2 mb-2 shadow-sm">
@@ -61,11 +58,8 @@ const LatestBooks = () => {
             </CardContent>
             <CardFooter className="p-5 pt-0 flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-xs text-gray-400 line-through decoration-red-400">
-                  ${book.price_USD}
-                </span>
                 <span className="text-xl font-bold text-primary">
-                  ${book.discounted_price_USD}
+                  ${book.price}
                 </span>
               </div>
               <Button size="sm" className="gap-2 rounded-full px-4 shadow-sm">

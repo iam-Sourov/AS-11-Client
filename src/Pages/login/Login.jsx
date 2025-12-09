@@ -12,22 +12,23 @@ import { AuthContext } from '../../contexts/AuthContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const Login = () => {
-  const { LogIn, GoogleLogin } = useContext(AuthContext); 
+  const { LogIn, GoogleLogin } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-const axios = useAxiosSecure()
+  const axios = useAxiosSecure();
+
   const onLogin = async ({ email, password }) => {
     try {
       await LogIn(email, password);
       toast.success("Login Successful!");
       navigate(from, { replace: true });
     } catch (err) {
-    
       console.error(err);
       toast.error("Invalid Email or Password");
+      navigate("/login");
     }
   };
 
@@ -48,55 +49,84 @@ const axios = useAxiosSecure()
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Google Login Failed");
+      navigate("/login");
     }
   };
 
-
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>Login to access your BookLibrary account</CardDescription>
+    <div className="flex items-center justify-center min-h-screen w-full px-4 py-12 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-sm sm:max-w-md shadow-xl border-gray-200 ">  
+        <CardHeader className="text-center space-y-1">
+          <CardTitle className="text-xl font-bold tracking-tight sm:text-2xl">
+            Welcome Back
+          </CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Login to access your BookLibrary account
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="grid gap-4 px-4 sm:px-6">
           <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
-
             <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" placeholder="john@example.com" {...register("email", { required: "Email is required" })} />
-              {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+              <Label htmlFor="email">Email</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="john@example.com" 
+                {...register("email", { required: "Email is required" })} 
+               
+                className="h-10"/>
+              {errors.email && <p className="text-red-500 text-xs font-medium">{errors.email.message}</p>}
             </div>
-
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label>Password</Label>
-                <Link to="/forgot-password" className="text-xs text-blue-600 hover:underline">Forgot Password?</Link>
+                <Label htmlFor="password">Password</Label>
+                <Link 
+                  to="/forgot-password" 
+                  className="text-xs font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                  Forgot Password?
+                </Link>
               </div>
               <div className="relative">
-                <Input type={showPassword ? "text" : "password"} placeholder="********" {...register("password", { required: "Password is required" })} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-gray-500">
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                <Input 
+                  id="password" 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="********" 
+                  {...register("password", { required: "Password is required" })} 
+                  className="h-10 pr-10"/>
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)} 
+                  className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm"
+                  aria-label={showPassword ? "Hide password" : "Show password"}>
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
+              {errors.password && <p className="text-red-500 text-xs font-medium">{errors.password.message}</p>}
             </div>
-
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Login</Button>
+            <Button type="submit" className="w-full h-10 bg-blue-600 hover:bg-blue-700 transition-colors">
+              Login
+            </Button>
           </form>
-
-          <div className="my-4 flex items-center gap-4">
-            <Separator className="flex-1" />
-            <span className="text-xs text-gray-500 uppercase">Or</span>
-            <Separator className="flex-1" />
+          <div className="relative my-2">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className=" px-2 text-muted-foreground">Or continue with</span>
+            </div>
           </div>
-
-          <Button variant="outline" onClick={handleGoogleLogin} className="w-full gap-2">
-            Google
+          <Button variant="outline" onClick={handleGoogleLogin} className="w-full h-10 gap-2 font-medium">
+             <svg className="h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+             Google
           </Button>
         </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-sm text-gray-600">Don't have an account? <Link to="/register" className="text-blue-600 hover:underline">Register</Link></p>
+        <CardFooter className="flex flex-col gap-2 border-t  p-6">
+          <p className="text-center text-sm ">
+            Don't have an account?{" "}
+            <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-500 hover:underline">
+              Register
+            </Link>
+          </p>
         </CardFooter>
       </Card>
     </div>

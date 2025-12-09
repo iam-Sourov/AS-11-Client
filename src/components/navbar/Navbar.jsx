@@ -86,12 +86,14 @@ const Navbar = () => {
                 <AnimatedThemeToggler />
                 {user && (
                     <div className="flex items-center gap-3">
-                        <Avatar className="cursor-pointer border-2 border-primary/10 hover:border-primary transition">
-                            <AvatarImage src={user.photoURL} alt={user.displayName || "User"} />
-                            <AvatarFallback className="font-bold bg-muted">
-                                {user?.email?.charAt(0).toUpperCase() || "U"}
-                            </AvatarFallback>
-                        </Avatar>
+                        <Link to={'/dashboard/my-profile'}>
+                            <Avatar className="cursor-pointer border-2 border-primary/10 hover:border-primary transition">
+                                <AvatarImage src={user.photoURL} alt={user.displayName || "User"} />
+                                <AvatarFallback className="font-bold bg-muted">
+                                    {user?.email?.charAt(0).toUpperCase() || "U"}
+                                </AvatarFallback>
+                            </Avatar>
+                        </Link>
                         <Button
                             variant="destructive"
                             size="sm"

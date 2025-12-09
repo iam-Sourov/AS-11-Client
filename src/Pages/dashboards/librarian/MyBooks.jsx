@@ -9,15 +9,16 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const MyBooks = () => {
     const { user } = useContext(AuthContext);
-    const axiosInstance = useAxiosSecure();
+    const axiosSecure = useAxiosSecure();
 
     const { data: books = [] } = useQuery({
         queryKey: ['my-books', user?.email],
         queryFn: async () => {
-            const res = await axiosInstance.get(`/books/librarian/${user.email}`);
+            const res = await axiosSecure.get(`/books/${user.email}`);
             return res.data;
         }
     });
+    console.log(books)
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">My Added Books</h2>

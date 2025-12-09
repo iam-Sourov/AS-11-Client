@@ -56,7 +56,7 @@ const AllBooks = () => {
       address,
       bookId: orderBook._id,
       bookTitle: orderBook.title,
-      price: orderBook.price, 
+      price: orderBook.price,
       status: 'pending',
       image: orderBook.image,
       payment_status: 'unpaid',
@@ -91,8 +91,6 @@ const AllBooks = () => {
   return (
     <div>
       <h1 className='text-3xl font-bold mt-6 mb-4 text-center'>All Books</h1>
-
-      {/* Search Bar */}
       <div className="flex justify-center mb-6">
         <div className="relative w-full max-w-md ">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -114,7 +112,7 @@ const AllBooks = () => {
               <p className="text-gray-600 text-sm mt-1">By {b.author}</p>
               <p className="text-gray-500 text-sm mt-2 line-clamp-2 grow">{b.description}</p>
               <div className="flex justify-between items-center mt-3">
-                <span className="font-bold text-primary">${b.price}</span>
+                <span className="font-bold text-primary">{b.price}$</span>
                 <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">{b.category}</span>
               </div>
               <Button className="mt-4 w-full" onClick={() => setSelectedBook(b)}>View Details</Button>

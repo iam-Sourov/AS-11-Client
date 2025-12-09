@@ -8,15 +8,13 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Slider = () => {
   const axiosSecure = useAxiosSecure();
-  const { data: books = [], isLoading, isError, error, refetch } = useQuery({
+  const { data: books = [], isLoading, isError, error, } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
       const res = await axiosSecure.get('/books');
       return res.data;
     }
   });
-  if (isLoading) return <Spinner></Spinner>
-
   return (
     <section className="w-full py-12 overflow-hidden ">
       <h2 className="text-3xl font-bold text-center mb-8">
@@ -30,7 +28,7 @@ const Slider = () => {
             className="w-[350px] h-[270px]  shadow-lg rounded-2xl p-4 flex flex-col justify-between hover:scale-105 transition-all border"
           >
             <img
-              src={book.image_url}
+              src={book.image}
               alt={book.title}
               className="w-full h-40 object-cover rounded-xl"
             />
@@ -52,7 +50,7 @@ const Slider = () => {
             className="w-[350px] h-[270px] shadow-lg rounded-2xl p-4 flex flex-col justify-between hover:scale-105 transition-all border"
           >
             <img
-              src={book.image_url}
+              src={book.image}
               alt={book.title}
               className="w-full h-40 object-cover rounded-xl"
             />

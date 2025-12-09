@@ -37,6 +37,7 @@ const ManageBooks = () => {
       }
     });
   };
+  console.log(books)
 
   return (
     <div className="p-4">
@@ -56,11 +57,12 @@ const ManageBooks = () => {
             {books.map((book) => (
               <TableRow key={book._id}>
                 <TableCell>
-                  <img src={book.image_url} alt="" className="w-8 h-12 object-cover rounded" />
+                  <img src={book.image} alt="" className="w-8 h-12 object-cover rounded" />
                 </TableCell>
                 <TableCell className="font-medium">{book.title}</TableCell>
                 <TableCell>{book.author}</TableCell>
-                <TableCell className="text-xs text-gray-500">{book.librarianEmail}</TableCell>
+                <TableCell className="text-xs text-gray-500">{book.author}</TableCell>
+                
                 <TableCell className="text-right">
                   <Button
                     variant="destructive"
