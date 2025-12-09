@@ -28,6 +28,8 @@ function AppSidebar() {
   const adminItems = [
     { title: "Manage Users", to: "/dashboard/manage-users", icon: Users },
     { title: "Manage Books", to: "/dashboard/manage-books", icon: Library },
+    { title: "My-Profile", to: "/dashboard/my-profile", icon: LayoutDashboard },
+    { title: "Stats", to: "/dashboard/stats", icon: LayoutDashboard }
   ];
 
   const librarianItems = [

@@ -263,6 +263,7 @@ function SidebarTrigger({
 
   return (
     <div className="flex items-center gap-2">
+      {/* 1. Sidebar Toggle Button */}
       <Button
         data-sidebar="trigger"
         data-slot="sidebar-trigger"
@@ -278,7 +279,9 @@ function SidebarTrigger({
         <PanelLeftIcon />
         <span className="sr-only">Toggle Sidebar</span>
       </Button>
-      <AnimatedThemeToggler  size="4"></AnimatedThemeToggler>
+
+      {/* 2. Theme Toggler */}
+      <AnimatedThemeToggler size="4"></AnimatedThemeToggler>
     </div>
   );
 }

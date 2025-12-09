@@ -10,8 +10,10 @@ import PrivateRoute from "./Private/PrivateRoutes";
 import MyBooks from "../Pages/dashboards/librarian/MyBooks";
 import Orders from "../Pages/dashboards/librarian/Orders";
 import ManageBooks from "../Pages/dashboards/admin/ManageBooks";
+import ManageUser from "../Pages/dashboards/admin/ManageUsers";
 import MyOrders from "../Pages/dashboards/user/MyOrders";
 import MyProfile from "../Pages/myProfile/MyProfile";
+import Stats from "../Pages/dashboards/admin/stats/stats";
 
 
 const router = createBrowserRouter([
@@ -45,23 +47,42 @@ const router = createBrowserRouter([
         </PrivateRoute>,
         children: [
             {
+                path: "manage-books",
+                element: <PrivateRoute allowedRoles={['admin']}>
+                    <ManageBooks></ManageBooks>
+                </PrivateRoute>,
+            },
+            {
+                index: true,
+                element: <PrivateRoute allowedRoles={['admin']}>
+                    <Stats></Stats>
+                </PrivateRoute>,
+            },
+            {
+                path: "manage-users",
+                element: <PrivateRoute allowedRoles={['admin']}>
+                    <ManageUser></ManageUser>
+                </PrivateRoute>,
+            },
+            {
                 path: "add-book",
-                element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
+                element: <PrivateRoute allowedRoles={['librarian']}>
                     <AddBook></AddBook>
                 </PrivateRoute>,
             },
             {
                 path: "my-books",
-                element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
+                element: <PrivateRoute allowedRoles={['librarian']}>
                     <MyBooks></MyBooks>
                 </PrivateRoute>,
             },
             {
                 path: "orders",
-                element: <PrivateRoute allowedRoles={['librarian', 'admin']}>
+                element: <PrivateRoute allowedRoles={['librarian']}>
                     <Orders></Orders>
                 </PrivateRoute>,
             },
+            //USER
             {
                 path: "my-orders",
                 element: <PrivateRoute >

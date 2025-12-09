@@ -83,12 +83,12 @@ const MyOrders = () => {
                     </Link>
                   )}
                   {order.status === 'pending' && (
-                    // <Button
-                    //   size="sm"
-                    //   variant="destructive"
-                    //   onClick={() => handleCancel(order._id)}>
-                    //   Cancel
-                    // </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleCancel(order._id)}>
+                      Cancel
+                    </Button>
                   )}
                 </TableCell>
               </TableRow>
