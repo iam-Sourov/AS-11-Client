@@ -13,7 +13,7 @@ import ManageBooks from "../Pages/dashboards/admin/ManageBooks";
 import ManageUser from "../Pages/dashboards/admin/ManageUsers";
 import MyOrders from "../Pages/dashboards/user/MyOrders";
 import MyProfile from "../Pages/myProfile/MyProfile";
-import Stats from "../Pages/dashboards/admin/stats/stats";
+import Stats from "../Pages/dashboards/stats/stats";
 
 
 const router = createBrowserRouter([
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
             },
             {
                 index: true,
-                element: <PrivateRoute allowedRoles={['admin']}>
+                element: <PrivateRoute allowedRoles={['admin', 'user', 'librarian']}>
                     <Stats></Stats>
                 </PrivateRoute>,
             },

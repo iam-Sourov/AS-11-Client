@@ -12,8 +12,6 @@ import { Search } from 'lucide-react';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { AuthContext } from '../../contexts/AuthContext';
 
-
-
 const AllBooks = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
@@ -32,7 +30,9 @@ const AllBooks = () => {
     }
   });
 
-  const searcedBook = books.filter((b) =>
+  const publishedBooks = books.filter(b => b.status === 'published');
+
+  const displayedBooks = publishedBooks.filter((b) =>
     b.title.toLowerCase().includes(search.toLowerCase()) ||
     b.author.toLowerCase().includes(search.toLowerCase())
   );
@@ -48,6 +48,7 @@ const AllBooks = () => {
       return;
     }
     setIsOrdering(true);
+
     const orderData = {
       name: user.displayName,
       email: user.email,
@@ -55,12 +56,13 @@ const AllBooks = () => {
       address,
       bookId: orderBook._id,
       bookTitle: orderBook.title,
-      price: orderBook.discounted_price_USD,
+      price: orderBook.price, 
       status: 'pending',
-      image_url: orderBook.image_url,
+      image: orderBook.image,
       payment_status: 'unpaid',
       date: new Date().toISOString()
     };
+
     try {
       const res = await axiosSecure.post('/orders', orderData);
       if (res.data.insertedId === null) {
@@ -68,16 +70,13 @@ const AllBooks = () => {
         setIsOrdering(false);
         return;
       }
-      if (res.data.insertedId) {
+
+      if (res.data.insertedId || res.data.acknowledged) {
         toast.success(`Order placed successfully for: ${orderBook.title}`);
         setOrderBook(null);
         setPhone('');
         setAddress('');
       }
-      toast.success(`Order placed successfully for: ${orderBook.title}`);
-      setOrderBook(null);
-      setPhone('');
-      setAddress('');
     } catch (err) {
       console.error(err);
       toast.error("Failed to place order. Please try again.");
@@ -85,6 +84,7 @@ const AllBooks = () => {
       setIsOrdering(false);
     }
   };
+
   if (isLoading) return <div className="p-8 flex items-center justify-center text-center"><Spinner /></div>;
   if (isError) return <div className="p-8 text-red-500 text-center">Error: {error.message}</div>;
 
@@ -92,6 +92,7 @@ const AllBooks = () => {
     <div>
       <h1 className='text-3xl font-bold mt-6 mb-4 text-center'>All Books</h1>
 
+      {/* Search Bar */}
       <div className="flex justify-center mb-6">
         <div className="relative w-full max-w-md ">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -104,20 +105,23 @@ const AllBooks = () => {
           />
         </div>
       </div>
-      <div className="p-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {searcedBook.map((b) => (
+      <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {displayedBooks.map((b) => (
           <Card key={b._id} className="shadow-lg rounded-2xl overflow-hidden flex flex-col h-full hover:shadow-xl transition-shadow duration-300">
-            <img src={b.image_url} alt={b.title} className="w-full h-52 object-cover" />
+            <img src={b.image} alt={b.title} className="w-full h-52 object-cover" />
             <CardContent className="p-4 flex flex-col grow">
               <h2 className="font-bold text-xl line-clamp-1">{b.title}</h2>
               <p className="text-gray-600 text-sm mt-1">By {b.author}</p>
-              <p className="text-gray-500 text-sm mt-2 line-clamp-2 grow">{b.medium_description}</p>
+              <p className="text-gray-500 text-sm mt-2 line-clamp-2 grow">{b.description}</p>
+              <div className="flex justify-between items-center mt-3">
+                <span className="font-bold text-primary">${b.price}</span>
+                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">{b.category}</span>
+              </div>
               <Button className="mt-4 w-full" onClick={() => setSelectedBook(b)}>View Details</Button>
             </CardContent>
           </Card>
         ))}
       </div>
-
       <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
         <DialogContent className="rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
           {selectedBook && (
@@ -127,18 +131,17 @@ const AllBooks = () => {
               </DialogHeader>
               <div className="flex flex-col md:flex-row gap-6 mt-4">
                 <div className="w-full md:w-1/2">
-                  <img src={selectedBook.image_url} className="w-full rounded-xl object-cover shadow-md" alt={selectedBook.title} />
+                  <img src={selectedBook.image} className="w-full rounded-xl object-cover shadow-md" alt={selectedBook.title} />
                 </div>
                 <div className="flex-1 space-y-3 text-sm">
-                  <p className="leading-relaxed text-gray-700">{selectedBook.medium_description}</p>
+                  <p className="leading-relaxed text-gray-700">{selectedBook.description}</p>
                   <div className="pt-2 space-y-2">
                     <p><span className="font-semibold">Author:</span> {selectedBook.author}</p>
-                    <p><span className="font-semibold">Publisher:</span> {selectedBook.publisher}</p>
+                    <p><span className="font-semibold">Category:</span> {selectedBook.category}</p>
                     <p><span className="font-semibold">Rating:</span> ⭐ {selectedBook.rating}</p>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">Price:</span>
-                      <span className="text-gray-400 line-through">${selectedBook.price_USD}</span>
-                      <span className="text-xl font-bold text-green-600">${selectedBook.discounted_price_USD}</span>
+                      <span className="text-xl font-bold text-green-600">${selectedBook.price}</span>
                     </div>
                   </div>
                   <Button className="w-full mt-6" onClick={handleOpenOrderModal}>
@@ -158,18 +161,15 @@ const AllBooks = () => {
               Complete your purchase for <span className="font-semibold text-primary">{orderBook?.title}</span>.
             </DialogDescription>
           </DialogHeader>
-
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
               <Input id="name" value={user?.displayName || user?.name || ''} readOnly className="bg-gray-100 cursor-not-allowed" />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" value={user?.email || ''} readOnly className="bg-gray-100 cursor-not-allowed" />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="phone">Phone Number</Label>
               <Input
@@ -178,7 +178,6 @@ const AllBooks = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)} />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="address">Delivery Address</Label>
               <Textarea

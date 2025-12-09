@@ -65,8 +65,7 @@ const ManageBooks = () => {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(book._id)}
-                  >
+                    onClick={() => handleDelete(book._id)}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </TableCell>

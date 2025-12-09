@@ -26,13 +26,15 @@ function AppSidebar() {
   console.log(role);
 
   const adminItems = [
+    { title: "Home", to: "/", icon: Home },
     { title: "Manage Users", to: "/dashboard/manage-users", icon: Users },
     { title: "Manage Books", to: "/dashboard/manage-books", icon: Library },
     { title: "My-Profile", to: "/dashboard/my-profile", icon: LayoutDashboard },
-    { title: "Stats", to: "/dashboard/stats", icon: LayoutDashboard }
+    { title: "Stats", to: "/dashboard/stats", icon: LayoutDashboard },
   ];
 
   const librarianItems = [
+    { title: "Home", to: "/", icon: Home },
     { title: "Add Book", to: "/dashboard/add-book", icon: PlusCircle },
     { title: "My Books", to: "/dashboard/my-books", icon: Book },
     { title: "Manage Orders", to: "/dashboard/orders", icon: ShoppingBag },
