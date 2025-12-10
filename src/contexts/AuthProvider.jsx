@@ -8,17 +8,14 @@ const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const signUp = (email, password) => {
-        setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password);
     };
 
     const LogIn = (email, password) => {
-        setLoading(true);
         return signInWithEmailAndPassword(auth, email, password);
     };
 
     const LogOut = () => {
-        setLoading(true);
         return signOut(auth);
     };
 
@@ -27,7 +24,7 @@ const AuthProvider = ({ children }) => {
     };
 
     const GoogleLogin = () => {
-        setLoading(true);
+
         return signInWithPopup(auth, googleProvider);
     };
 

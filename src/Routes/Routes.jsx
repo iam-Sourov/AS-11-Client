@@ -14,6 +14,7 @@ import ManageUser from "../Pages/dashboards/admin/ManageUsers";
 import MyOrders from "../Pages/dashboards/user/MyOrders";
 import MyProfile from "../Pages/myProfile/MyProfile";
 import Stats from "../Pages/dashboards/stats/stats";
+import Invoices from "../Pages/dashboards/user/Invoices";
 
 
 const router = createBrowserRouter([
@@ -87,6 +88,12 @@ const router = createBrowserRouter([
                 path: "my-orders",
                 element: <PrivateRoute >
                     <MyOrders></MyOrders>
+                </PrivateRoute>,
+            },
+            {
+                path: "my-invoices",
+                element: <PrivateRoute >
+                    <Invoices></Invoices>
                 </PrivateRoute>,
             },
             {

@@ -50,7 +50,7 @@ const MyOrders = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead >Cover</TableHead>
+              <TableHead>Cover</TableHead>
               <TableHead>Book Title</TableHead>
               <TableHead>Order Date</TableHead>
               <TableHead>Price</TableHead>
@@ -62,7 +62,7 @@ const MyOrders = () => {
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell className="font-medium"><img className='w-9 h-9 rounded' src={order.image_url} alt="" /> </TableCell>
+                <TableCell className="font-medium"><img className='w-9 h-9 rounded' src={order.image} alt="" /> </TableCell>
                 <TableCell className="font-medium">{order.bookTitle}</TableCell>
                 <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                 <TableCell>${order.price}</TableCell>

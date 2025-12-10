@@ -3,10 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useLocation, useNavigate } from 'react-router';
-import { Eye, EyeOff, Upload } from 'lucide-react';
+import { Eye, EyeOff, Upload, Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 import axios from 'axios';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,10 +14,9 @@ import { Separator } from '@/components/ui/separator';
 import { AuthContext } from '../../contexts/AuthContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
-
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.email("Invalid email address"),
+  email: z.string().email("Invalid email address"),
   password: z.string()
     .min(6, "Password must be at least 6 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -31,6 +29,9 @@ const Register = () => {
   const { signUp, updateUser, GoogleLogin } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,7 +52,9 @@ const Register = () => {
   };
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const toastId = toast.loading("Creating Account...");
+
     try {
       let photoURL = null;
       if (data.image) {
@@ -63,11 +66,13 @@ const Register = () => {
         );
         photoURL = res.data.data.display_url;
       }
+
       await signUp(data.email, data.password);
       await updateUser({
         displayName: data.name,
         photoURL: photoURL,
       });
+
       const userInfo = {
         name: data.name,
         email: data.email,
@@ -85,10 +90,12 @@ const Register = () => {
     } catch (err) {
       console.error(err);
       toast.error(err?.response?.data?.message || err.message || "Registration failed", { id: toastId });
+      setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
     try {
       const result = await GoogleLogin();
 
@@ -106,6 +113,7 @@ const Register = () => {
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Google Login Failed");
+      setIsGoogleLoading(false);
     }
   };
 
@@ -123,13 +131,11 @@ const Register = () => {
               <Input placeholder="John Doe" {...register("name")} />
               {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
             </div>
-
             <div className="space-y-2">
               <Label>Email</Label>
               <Input type="email" placeholder="john@example.com" {...register("email")} />
               {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
             </div>
-
             <div className="space-y-2">
               <Label>Password</Label>
               <div className="relative">
@@ -140,7 +146,6 @@ const Register = () => {
               </div>
               {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
             </div>
-
             <div className="space-y-2">
               <Label>Profile Picture</Label>
               <div className="flex items-center gap-4">
@@ -151,8 +156,20 @@ const Register = () => {
                 <Input type="file" accept="image/*" onChange={handleImageChange} className="cursor-pointer" />
               </div>
             </div>
-
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Register</Button>
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                "Register"
+              )}
+            </Button>
           </form>
 
           <div className="my-4 flex items-center gap-4">
@@ -160,9 +177,20 @@ const Register = () => {
             <span className="text-xs text-gray-500 uppercase">Or</span>
             <Separator className="flex-1" />
           </div>
-
-          <Button variant="outline" onClick={handleGoogleLogin} className="w-full gap-2">
-            Google
+          <Button
+            variant="outline"
+            onClick={handleGoogleLogin}
+            disabled={isGoogleLoading}
+            className="w-full gap-2"
+          >
+            {isGoogleLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <svg className="h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+                Google
+              </>
+            )}
           </Button>
         </CardContent>
         <CardFooter className="justify-center">
