@@ -5,6 +5,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { ShoppingCart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import { Link } from 'react-router';
 
 const LatestBooks = () => {
   const axiosSecure = useAxiosSecure();
@@ -16,7 +17,6 @@ const LatestBooks = () => {
     }
 
   });
-  console.log(books)
   const latestBooks = books.sort((a, b) => new Date(b.rating) - new Date(a.rating)).slice(0, 8);
 
   if (isLoading) {
@@ -41,19 +41,15 @@ const LatestBooks = () => {
                 src={book.image}
                 alt={book.title}
                 className="w-full rounded-2xl h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
-              
+
             </div>
             <CardContent className="p-5 grow">
-              <Button size="sm" className="gap-2 mb-2 shadow-sm">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <span className="text-sm font-semibold ">{book.rating}</span>
-              </Button>
               <h3 className="font-bold text-lg leading-tight mb-1 line-clamp-1" title={book.title}>
                 {book.title}
               </h3>
               <p className="text-sm text-gray-500 mb-1 font-medium">by {book.author}</p>
               <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
-                {book.medium_description}
+                {book.description}
               </p>
             </CardContent>
             <CardFooter className="p-5 pt-0 flex items-center justify-between">
@@ -62,13 +58,18 @@ const LatestBooks = () => {
                   ${book.price}
                 </span>
               </div>
-              <Button size="sm" className="gap-2 rounded-full px-4 shadow-sm">
-                <ShoppingCart className="w-4 h-4" />
-                Add
+              <Button size="sm" className="gap-2 mb-2 shadow-sm">
+                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                <span className="text-sm font-semibold ">{book.rating}</span>
               </Button>
             </CardFooter>
           </Card>
         ))}
+      </div>
+      <div className='text-center border'>
+        <Button className="mt-4 w-full" >
+          <Link to={'/all-books'}>See All Books</Link>
+        </Button>
       </div>
     </section>
   );

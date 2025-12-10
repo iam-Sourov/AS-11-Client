@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { Spinner } from "@/components/ui/spinner"
 import {
     Menubar,
     MenubarMenu,
@@ -22,10 +21,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { AuthContext } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
-import { Menu, LogOut } from 'lucide-react'; // Icons
+import { Menu } from 'lucide-react';
 
 const Navbar = () => {
     const { user, LogOut } = useContext(AuthContext);
+    console.log(user)
     const [isOpen, setIsOpen] = useState(false);
     const getLinkClass = ({ isActive }) =>
         `cursor-pointer hover:text-primary transition ${isActive ? "text-blue-500 font-bold" : "text-sm font-medium"
@@ -141,7 +141,7 @@ const Navbar = () => {
                                         variant="destructive"
                                         onClick={handleSignOut}
                                         className="w-full flex items-center gap-2">
-                                        <LogOut size={16} /> Logout
+                                         Logout
                                     </Button>
                                 )}
                             </div>

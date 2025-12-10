@@ -11,7 +11,6 @@ import axios from "axios";
 
 const MyProfile = () => {
   const { user, setUser, updateUser } = useContext(AuthContext);
-  console.log(user)
   const axiosSecure = useAxiosSecure();
 
   const [name, setName] = useState(user?.displayName);
