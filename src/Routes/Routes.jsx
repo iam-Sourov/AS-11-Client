@@ -15,6 +15,9 @@ import MyOrders from "../Pages/dashboards/user/MyOrders";
 import MyProfile from "../Pages/myProfile/MyProfile";
 import Stats from "../Pages/dashboards/stats/stats";
 import Invoices from "../Pages/dashboards/user/Invoices";
+import Payment from "../Pages/dashboards/payment/Payment";
+import PaymentSuccess from "../Pages/dashboards/payment/PaymentSuccess";
+import PaymentCancel from "../Pages/dashboards/payment/PaymentCancel";
 
 
 const router = createBrowserRouter([
@@ -89,6 +92,14 @@ const router = createBrowserRouter([
                 element: <PrivateRoute >
                     <MyOrders></MyOrders>
                 </PrivateRoute>,
+            },
+            {
+                path: "/dashboard/payment-success",
+                element: <PaymentSuccess></PaymentSuccess>
+            },
+            {
+                path: "/dashboard/payment-cancel",
+                element: <PaymentCancel></PaymentCancel>
             },
             {
                 path: "my-invoices",

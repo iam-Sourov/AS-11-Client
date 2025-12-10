@@ -99,8 +99,8 @@ const MyBooks = () => {
                                 <TableCell>${book.price}</TableCell>
                                 <TableCell>
                                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${book.status === 'published'
-                                            ? 'bg-green-100 text-green-700 border border-green-200'
-                                            : 'bg-gray-100 text-gray-700 border border-gray-200'
+                                        ? 'bg-green-100 text-green-700 border border-green-200'
+                                        : 'bg-gray-100 text-gray-700 border border-gray-200'
                                         }`}>
                                         {book.status}
                                     </span>

@@ -7,7 +7,7 @@ import { AuthContext } from '../../../contexts/AuthContext';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const Orders = () => {
-  const {user}= useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const axiosInstance = useAxiosSecure();
 
   const { data: orders = [], refetch } = useQuery({
@@ -48,7 +48,7 @@ const Orders = () => {
                 <TableCell>{order.customerEmail || order.email}</TableCell>
                 <TableCell>
                   <span className={`capitalize font-medium ${order.status === 'pending' ? 'text-yellow-600' :
-                      order.status === 'shipped' ? 'text-blue-600' : 'text-green-600'
+                    order.status === 'shipped' ? 'text-blue-600' : 'text-green-600'
                     }`}>
                     {order.status}
                   </span>

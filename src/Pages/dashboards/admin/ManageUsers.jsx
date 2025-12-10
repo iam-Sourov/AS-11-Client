@@ -90,7 +90,7 @@ const ManageUsers = () => {
                     Already Admin
                   </span>
                 )}
-                
+
               </TableCell>
             </TableRow>
           ))}

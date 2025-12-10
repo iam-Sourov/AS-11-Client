@@ -20,8 +20,17 @@ const MyOrders = () => {
       return res.data;
     }
   });
-  console.log(orders)
-
+  const handlePayment = async (order) => {
+    const orderInfo = {
+      _id: order._id,
+      email: order.email,
+      bookTitle: order.bookTitle,
+      image: order.image,
+      price: order.price,
+    }
+    const res = await axiosSecure.post('/payment-checkout-session', orderInfo);
+    window.location.href = res.data.url;
+  }
   const handleCancel = (id) => {
     Swal.fire({
       title: "Cancel Order?",
@@ -78,9 +87,9 @@ const MyOrders = () => {
                 </TableCell>
                 <TableCell className="text-right flex justify-end gap-2">
                   {order.status !== 'cancelled' && order.paymentStatus !== 'paid' && (
-                    <Link to={`/dashboard/payment/${order._id}`}>
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700">Pay Now</Button>
-                    </Link>
+
+                    <Button onClick={() => handlePayment(order)} size="sm" className="bg-green-600 hover:bg-green-700">Pay Now</Button>
+
                   )}
                   {order.status === 'pending' && (
                     <Button

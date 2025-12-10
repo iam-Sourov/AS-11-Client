@@ -15,7 +15,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner />
-      </div>
+      </div>  
     );
   }
 

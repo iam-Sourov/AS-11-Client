@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from 'lucide-react';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const ManageBooks = () => {
@@ -62,7 +62,7 @@ const ManageBooks = () => {
                 <TableCell className="font-medium">{book.title}</TableCell>
                 <TableCell>{book.author}</TableCell>
                 <TableCell className="text-xs text-gray-500">{book.author}</TableCell>
-                
+
                 <TableCell className="text-right">
                   <Button
                     variant="destructive"
