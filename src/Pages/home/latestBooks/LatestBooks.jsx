@@ -17,7 +17,9 @@ const LatestBooks = () => {
     }
 
   });
+
   const latestBooks = books.sort((a, b) => new Date(b.rating) - new Date(a.rating)).slice(0, 8);
+  const publishedBooks = latestBooks.filter(b => b.status === 'published');
 
   if (isLoading) {
     return (
@@ -34,7 +36,7 @@ const LatestBooks = () => {
     <section className=" py-12 px-4">
       <h2 className="text-3xl font-bold mb-8 text-center">Latest Books</h2>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 container mx-auto">
-        {latestBooks.map((book) => (
+        {publishedBooks.map((book) => (
           <Card key={book._id} className="flex flex-col h-full rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
             <div className="relative group overflow-hidden">
               <img

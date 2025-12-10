@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +9,7 @@ import { toast } from 'sonner';
 import Swal from 'sweetalert2';
 
 const MyOrders = () => {
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
   const { data: orders = [], refetch } = useQuery({
@@ -20,6 +19,7 @@ const MyOrders = () => {
       return res.data;
     }
   });
+
   const handlePayment = async (order) => {
     const orderInfo = {
       _id: order._id,
@@ -27,10 +27,19 @@ const MyOrders = () => {
       bookTitle: order.bookTitle,
       image: order.image,
       price: order.price,
+    };
+
+    try {
+      const res = await axiosSecure.post('/payment-checkout-session', orderInfo);
+      if (res.data.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (error) {
+      console.error("Payment redirect failed", error);
+      toast.error("Failed to initiate payment");
     }
-    const res = await axiosSecure.post('/payment-checkout-session', orderInfo);
-    window.location.href = res.data.url;
-  }
+  };
+
   const handleCancel = (id) => {
     Swal.fire({
       title: "Cancel Order?",
@@ -52,6 +61,7 @@ const MyOrders = () => {
       }
     });
   };
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">My Orders</h2>
@@ -71,34 +81,54 @@ const MyOrders = () => {
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell className="font-medium"><img className='w-9 h-9 rounded' src={order.image} alt="" /> </TableCell>
+                <TableCell>
+                  <img className='w-9 h-9 rounded' src={order.image} alt={order.bookTitle} />
+                </TableCell>
+
                 <TableCell className="font-medium">{order.bookTitle}</TableCell>
+
                 <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+
                 <TableCell>${order.price}</TableCell>
+
                 <TableCell>
                   <Badge variant={order.status === 'cancelled' ? "destructive" : "outline"}>
                     {order.status}
                   </Badge>
                 </TableCell>
+
                 <TableCell>
-                  <span className={order.paymentStatus === 'paid' ? "text-green-600 font-bold text-xl" : "text-yellow-600"}>
-                    {order.payment_Status || 'Unpaid'}
+                  {/* Checks strictly against 'paid' from your backend object */}
+                  <span className={order.payment_status === 'paid' ? "text-green-600 font-bold" : "text-yellow-600"}>
+                    {order.payment_status ? order.payment_status : 'Unpaid'}
                   </span>
                 </TableCell>
+
                 <TableCell className="text-right flex justify-end gap-2">
-                  {order.status !== 'cancelled' && order.paymentStatus !== 'paid' && (
 
-                    <Button onClick={() => handlePayment(order)} size="sm" className="bg-green-600 hover:bg-green-700">Pay Now</Button>
-
+                  {/* PAY NOW: Shows if Pending AND Not Paid */}
+                  {order.status === 'pending' && order.payment_status !== 'paid' && (
+                    <Button
+                      onClick={() => handlePayment(order)}
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Pay Now
+                    </Button>
                   )}
-                  {order.status === 'pending' && (
+
+                  {/* CANCEL: Shows if Pending AND Not Paid */}
+                  {/* IMPORTANT: I added '&& order.payment_status !== 'paid'' to prevent cancelling paid orders */}
+                  {order.status === 'pending' && order.payment_status !== 'paid' && (
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleCancel(order._id)}>
+                      onClick={() => handleCancel(order._id)}
+                    >
                       Cancel
                     </Button>
                   )}
+
                 </TableCell>
               </TableRow>
             ))}

@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useForm, Controller } from 'react-hook-form'; // Import React Hook Form
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -24,16 +25,41 @@ const MyBooks = () => {
 
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
-    const [newStatus, setNewStatus] = useState("");
+
+    // 1. Setup React Hook Form
+    const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
+        defaultValues: {
+            title: '',
+            author: '',
+            price: '',
+            image: '',
+            status: ''
+        }
+    });
 
     const { data: books = [], isLoading } = useQuery({
         queryKey: ['my-books', user?.displayName],
         enabled: !!user?.displayName,
         queryFn: async () => {
+            if (!user?.displayName) return [];
             const res = await axiosSecure.get(`/books/${user.displayName}`);
             return res.data;
         }
     });
+
+    // 2. Magic Fix: Update form values when a book is selected
+    useEffect(() => {
+        if (selectedBook) {
+            reset({
+                title: selectedBook.title,
+                author: selectedBook.author,
+                price: selectedBook.price,
+                image: selectedBook.image,
+                status: selectedBook.status
+            });
+        }
+    }, [selectedBook, reset]);
+
     const updateMutation = useMutation({
         mutationFn: async ({ id, updatedData }) => {
             const res = await axiosSecure.patch(`/books/${id}`, updatedData);
@@ -51,26 +77,20 @@ const MyBooks = () => {
 
     const handleEditClick = (book) => {
         setSelectedBook(book);
-        setNewStatus(book.status)
         setIsEditOpen(true);
     };
 
-    const handleUpdateSubmit = async (e) => {
-        e.preventDefault();
-        const form = e.target;
-
-        const updatedData = {
-            title: form.title.value,
-            author: form.author.value,
-            price: parseFloat(form.price.value),
-            image: form.image_url.value,
-            status: newStatus
+    // 3. Clean Submit Handler (No manual reading of inputs)
+    const onSubmit = (data) => {
+        // Ensure price is a number
+        const formattedData = {
+            ...data,
+            price: parseFloat(data.price)
         };
-
-        updateMutation.mutate({ id: selectedBook._id, updatedData });
+        updateMutation.mutate({ id: selectedBook._id, updatedData: formattedData });
     };
 
-    if (isLoading) return <div className="p-10 text-center">Loading books...</div>;
+    if (isLoading) return <div className="p-10 text-center"><Loader2 className="animate-spin inline mr-2" />Loading books...</div>;
 
     return (
         <div className="p-6 bg-background min-h-screen">
@@ -119,6 +139,7 @@ const MyBooks = () => {
                     </TableBody>
                 </Table>
             </div>
+
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
@@ -128,53 +149,75 @@ const MyBooks = () => {
                         </DialogDescription>
                     </DialogHeader>
 
-                    {selectedBook && (
-                        <form onSubmit={handleUpdateSubmit} className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="title" className="text-right">Title</Label>
-                                <Input id="title" name="title" defaultValue={selectedBook.title} className="col-span-3" required />
-                            </div>
+                    {/* Form starts here - No need for 'key' anymore */}
+                    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="title" className="text-right">Title</Label>
+                            <Input
+                                id="title"
+                                className="col-span-3"
+                                {...register("title", { required: true })}
+                            />
+                        </div>
 
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="author" className="text-right">Author</Label>
-                                <Input id="author" name="author" defaultValue={selectedBook.author} className="col-span-3 bg-muted" readOnly />
-                            </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="author" className="text-right">Author</Label>
+                            <Input
+                                id="author"
+                                className="col-span-3 bg-muted"
+                                readOnly
+                                {...register("author")}
+                            />
+                        </div>
 
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="price" className="text-right">Price</Label>
-                                <Input id="price" name="price" type="number" defaultValue={selectedBook.price} className="col-span-3" required />
-                            </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="price" className="text-right">Price</Label>
+                            <Input
+                                id="price"
+                                type="number"
+                                className="col-span-3"
+                                {...register("price", { required: true })}
+                            />
+                        </div>
 
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="image_url" className="text-right">Image URL</Label>
-                                <Input id="image_url" name="image_url" defaultValue={selectedBook.image_url} className="col-span-3" required />
-                            </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="image" className="text-right">Image URL</Label>
+                            <Input
+                                id="image"
+                                className="col-span-3"
+                                {...register("image", { required: true })}
+                            />
+                        </div>
 
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="status" className="text-right">Status</Label>
-                                <div className="col-span-3">
-                                    <Select
-                                        onValueChange={setNewStatus}
-                                        defaultValue={selectedBook.status}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="published">Published</SelectItem>
-                                            <SelectItem value="unpublished">Unpublished</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="status" className="text-right">Status</Label>
+                            <div className="col-span-3">
+                                {/* Controller is needed for Shadcn Select because it's not a native HTML input */}
+                                <Controller
+                                    name="status"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <SelectTrigger id="status">
+                                                <SelectValue placeholder="Select status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="published">Published</SelectItem>
+                                                <SelectItem value="unpublished">Unpublished</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
                             </div>
-                            <DialogFooter>
-                                <Button type="submit" disabled={updateMutation.isPending}>
-                                    {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Save Changes
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    )}
+                        </div>
+
+                        <DialogFooter>
+                            <Button type="submit" disabled={updateMutation.isPending}>
+                                {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Save Changes
+                            </Button>
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         </div>

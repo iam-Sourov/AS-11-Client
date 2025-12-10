@@ -33,12 +33,12 @@ function AppSidebar() {
     { title: "My-Profile", to: "/dashboard/my-profile", icon: LayoutDashboard },
     { title: "Stats", to: "/dashboard/stats", icon: LayoutDashboard },
   ];
-  <ReceiptText />;
   const librarianItems = [
     { title: "Home", to: "/", icon: Home },
     { title: "Add Book", to: "/dashboard/add-book", icon: PlusCircle },
     { title: "My Books", to: "/dashboard/my-books", icon: Book },
     { title: "Manage Orders", to: "/dashboard/orders", icon: ShoppingBag },
+    { title: "Stats", to: "/dashboard/stats", icon: LayoutDashboard },
   ];
 
   const userItems = [
