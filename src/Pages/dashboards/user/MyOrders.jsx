@@ -17,8 +17,10 @@ const MyOrders = () => {
     queryFn: async () => {
       const res = await axiosSecure.get(`/orders?email=${user.email}`);
       return res.data;
-    }
+    },
+    refetchInterval: 5000,
   });
+  console.log(orders)
 
   const handlePayment = async (order) => {
     const orderInfo = {
@@ -39,7 +41,6 @@ const MyOrders = () => {
       toast.error("Failed to initiate payment");
     }
   };
-
   const handleCancel = (id) => {
     Swal.fire({
       title: "Cancel Order?",
@@ -61,7 +62,6 @@ const MyOrders = () => {
       }
     });
   };
-
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">My Orders</h2>
@@ -84,51 +84,45 @@ const MyOrders = () => {
                 <TableCell>
                   <img className='w-9 h-9 rounded' src={order.image} alt={order.bookTitle} />
                 </TableCell>
-
                 <TableCell className="font-medium">{order.bookTitle}</TableCell>
-
                 <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-
                 <TableCell>${order.price}</TableCell>
-
                 <TableCell>
-                  <Badge variant={order.status === 'cancelled' ? "destructive" : "outline"}>
-                    {order.status}
+                  <Badge
+                    className={
+                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
+                        order.status === 'shipped' ? 'bg-blue-100 text-blue-800 hover:bg-blue-200' :
+                          order.status === 'delivered' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
+                            order.status === 'cancelled' ? 'bg-red-100 text-red-800 hover:bg-red-200' :
+                              'bg-gray-100 text-gray-800'
+                    }
+                    variant="outline">
+                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </Badge>
                 </TableCell>
-
                 <TableCell>
-                  {/* Checks strictly against 'paid' from your backend object */}
                   <span className={order.payment_status === 'paid' ? "text-green-600 font-bold" : "text-yellow-600"}>
                     {order.payment_status ? order.payment_status : 'Unpaid'}
                   </span>
                 </TableCell>
 
                 <TableCell className="text-right flex justify-end gap-2">
-
-                  {/* PAY NOW: Shows if Pending AND Not Paid */}
                   {order.status === 'pending' && order.payment_status !== 'paid' && (
                     <Button
                       onClick={() => handlePayment(order)}
                       size="sm"
-                      className="bg-green-600 hover:bg-green-700"
-                    >
+                      className="bg-green-600 hover:bg-green-700">
                       Pay Now
                     </Button>
                   )}
-
-                  {/* CANCEL: Shows if Pending AND Not Paid */}
-                  {/* IMPORTANT: I added '&& order.payment_status !== 'paid'' to prevent cancelling paid orders */}
                   {order.status === 'pending' && order.payment_status !== 'paid' && (
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleCancel(order._id)}
-                    >
+                      onClick={() => handleCancel(order._id)}>
                       Cancel
                     </Button>
                   )}
-
                 </TableCell>
               </TableRow>
             ))}

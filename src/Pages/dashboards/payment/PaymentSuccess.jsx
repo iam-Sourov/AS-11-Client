@@ -1,9 +1,10 @@
-import { useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { CheckCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 
 const PaymentSuccess = () => {
   const axiosSecure = useAxiosSecure();
@@ -11,20 +12,16 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id')
   console.log(sessionId)
+
   useEffect(() => {
     if (sessionId) {
       axiosSecure.patch(`/payment-success?session_id=${sessionId}`)
         .then(res => {
           console.log(res.data);
-          // Optional: Redirect or stop loading here
+          setLoading(false)
         })
     }
   }, [sessionId, axiosSecure])
-
-
-
-
-
 
 
   if (loading) {
