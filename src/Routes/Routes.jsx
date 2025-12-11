@@ -93,11 +93,11 @@ const router = createBrowserRouter([
                 </PrivateRoute>,
             },
             {
-                path: "/dashboard/payment-success",
+                path: "payment-success",
                 element: <PaymentSuccess></PaymentSuccess>
             },
             {
-                path: "/dashboard/payment-cancel",
+                path: "payment-cancel",
                 element: <PaymentCancel></PaymentCancel>
             },
             {

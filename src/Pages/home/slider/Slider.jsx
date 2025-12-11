@@ -15,6 +15,7 @@ const Slider = () => {
       return res.data;
     }
   });
+  console.log(books)
   return (
     <section className="w-full py-12 overflow-hidden ">
       <h2 className="text-3xl font-bold text-center mb-8">

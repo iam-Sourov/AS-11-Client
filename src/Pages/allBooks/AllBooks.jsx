@@ -31,7 +31,6 @@ const AllBooks = () => {
   const [address, setAddress] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
 
-  // Fetch books
   const { data: books = [], isLoading, isError, error } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
