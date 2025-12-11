@@ -1,13 +1,45 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import {
+    MoreHorizontal,
+    Loader2,
+    Pencil,
+    Globe,
+    Archive,
+    BookOpen
+} from 'lucide-react';
+import { toast } from 'sonner';
+
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
+} from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter
+} from "@/components/ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Edit, Loader2, Ban, CheckCircle } from 'lucide-react'; // Added CheckCircle for Publish icon
-import { toast } from 'sonner';
+import { Badge } from "@/components/ui/badge";
+
 import { AuthContext } from '../../../contexts/AuthContext';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
@@ -15,19 +47,14 @@ const MyBooks = () => {
     const { user } = useContext(AuthContext);
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
-
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
 
-    // 1. Setup React Hook Form (Removed 'status' from defaults)
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
-        defaultValues: {
-            title: '',
-            author: '',
-            price: '',
-            image: ''
-        }
+    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
+        defaultValues: { title: '', price: '', image: '' }
     });
+
+    const watchedImage = watch('image');
 
     const { data: books = [], isLoading } = useQuery({
         queryKey: ['my-books', user?.displayName],
@@ -39,192 +66,177 @@ const MyBooks = () => {
         }
     });
 
-    // 2. Update form values when a book is selected (Removed 'status')
     useEffect(() => {
         if (selectedBook) {
             reset({
                 title: selectedBook.title,
-                author: selectedBook.author,
                 price: selectedBook.price,
                 image: selectedBook.image
             });
         }
     }, [selectedBook, reset]);
 
-    // 3. Mutation for Updating Book Details (General Edit)
     const updateMutation = useMutation({
         mutationFn: async ({ id, updatedData }) => {
             const res = await axiosSecure.patch(`/books/${id}`, updatedData);
             return res.data;
         },
         onSuccess: () => {
-            toast.success("Book updated successfully!");
+            toast.success("Book details updated");
             queryClient.invalidateQueries(['my-books']);
             setIsEditOpen(false);
         },
-        onError: (error) => {
-            toast.error(error.response?.data?.message || "Failed to update book");
-        }
+        onError: (error) => toast.error(error.response?.data?.message || "Update failed")
     });
 
-    // 4. Mutation for Toggling Status (Publish/Unpublish)
     const statusMutation = useMutation({
         mutationFn: async ({ id, newStatus }) => {
-            // Send only the status field
             const res = await axiosSecure.patch(`/books/${id}`, { status: newStatus });
             return res.data;
         },
         onSuccess: (_, variables) => {
-            toast.success(`Book ${variables.newStatus} successfully!`);
+            toast.success(variables.newStatus === 'published' ? "Book published!" : "Book archived");
             queryClient.invalidateQueries(['my-books']);
         },
-        onError: () => {
-            toast.error("Failed to update status");
-        }
+        onError: () => toast.error("Failed to update status")
     });
 
-    const handleEditClick = (book) => {
-        setSelectedBook(book);
-        setIsEditOpen(true);
-    };
-
-    const handleStatusChange = (id, newStatus) => {
-        statusMutation.mutate({ id, newStatus });
-    };
-
     const onSubmit = (data) => {
-        const formattedData = {
-            ...data,
-            price: parseFloat(data.price),
-            image: data.image 
-        };
         updateMutation.mutate({
             id: selectedBook._id,
-            updatedData: formattedData
+            updatedData: { ...data, price: parseFloat(data.price) }
         });
     };
 
-    if (isLoading) return <div className="p-10 text-center"><Loader2 className="animate-spin inline mr-2" />Loading books...</div>;
+    if (isLoading) return (
+        <div className="flex h-[50vh] w-full items-center justify-center text-muted-foreground">
+            <Loader2 className="animate-spin mr-2 h-5 w-5" /> Loading library...
+        </div>
+    );
 
     return (
-        <div className="p-6 bg-background min-h-screen">
-            <h2 className="text-2xl font-bold mb-6">My Added Books ({books.length})</h2>
+        <div className="container mx-auto p-6 md:p-10 space-y-8">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight">My Collection</h2>
+                    <p className="text-muted-foreground">Manage the books you've contributed to the library.</p>
+                </div>
+                <div className="text-sm font-medium bg-muted px-3 py-1 rounded-full">
+                    Total: {books.length}
+                </div>
+            </div>
 
-            <div className="border rounded-md shadow-sm bg-card">
+            <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead>Image</TableHead>
-                            <TableHead>Title</TableHead>
-                            <TableHead>Author</TableHead>
+                        <TableRow className="bg-muted/50 hover:bg-muted/50">
+                            <TableHead className="w-[400px]">Book Details</TableHead>
                             <TableHead>Price</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Action</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {books.length > 0 ? (
+                        {books.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={4} className="h-48 text-center">
+                                    <div className="flex flex-col items-center justify-center text-muted-foreground">
+                                        <BookOpen className="h-10 w-10 mb-2 opacity-20" />
+                                        <p>You haven't added any books yet.</p>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
                             books.map((book) => (
-                                <TableRow key={book._id}>
+                                <TableRow key={book._id} className="group">
                                     <TableCell>
-                                        <img src={book.image} alt={book.title} className="w-10 h-14 object-cover rounded border" />
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-12 w-9 rounded-sm overflow-hidden bg-muted border">
+                                                <img
+                                                    src={book.image}
+                                                    alt={book.title}
+                                                    className="h-full w-full object-cover transition-transform group-hover:scale-105"/>
+                                            </div>
+                                            <div>
+                                                <div className="font-medium">{book.title}</div>
+                                                <div className="text-xs text-muted-foreground truncate max-w-[200px]">{book._id}</div>
+                                            </div>
+                                        </div>
                                     </TableCell>
-                                    <TableCell className="font-medium">{book.title}</TableCell>
-                                    <TableCell>{book.author}</TableCell>
-                                    <TableCell>${book.price}</TableCell>
+                                    <TableCell className="font-medium">${book.price}</TableCell>
                                     <TableCell>
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${book.status === 'published'
-                                            ? 'bg-green-100 text-green-700 border border-green-200'
-                                            : 'bg-red-100 text-red-700 border border-red-200'
-                                            }`}>
+                                        <Badge
+                                            variant={book.status === 'published' ? 'default' : 'secondary'}
+                                            className={book.status === 'published' ? 'bg-emerald-500 hover:bg-emerald-600' : ''}>
                                             {book.status}
-                                        </span>
+                                        </Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="gap-2"
-                                                onClick={() => handleEditClick(book)}>
-                                                <Edit size={14} /> Edit
-                                            </Button>
-
-                                            {book.status === 'unpublished' ? (
-                                                <Button
-                                                    size="sm"
-                                                    className="gap-2 bg-green-600 hover:bg-green-700 text-white"
-                                                    onClick={() => handleStatusChange(book._id, 'published')}
-                                                    disabled={statusMutation.isPending}
-                                                >
-                                                    {statusMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
-                                                    Publish
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <span className="sr-only">Open menu</span>
+                                                    <MoreHorizontal className="h-4 w-4" />
                                                 </Button>
-                                            ) : (
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    className="gap-2"
-                                                    onClick={() => handleStatusChange(book._id, 'unpublished')}
-                                                    disabled={statusMutation.isPending}
-                                                >
-                                                    {statusMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Ban size={14} />}
-                                                    Unpublish
-                                                </Button>
-                                            )}
-                                        </div>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem onClick={() => { setSelectedBook(book); setIsEditOpen(true); }}>
+                                                    <Pencil className="mr-2 h-4 w-4" /> Edit Details
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                {book.status === 'unpublished' ? (
+                                                    <DropdownMenuItem onClick={() => statusMutation.mutate({ id: book._id, newStatus: 'published' })}>
+                                                        <Globe className="mr-2 h-4 w-4 text-emerald-600" /> Publish
+                                                    </DropdownMenuItem>
+                                                ) : (
+                                                    <DropdownMenuItem onClick={() => statusMutation.mutate({ id: book._id, newStatus: 'unpublished' })}>
+                                                        <Archive className="mr-2 h-4 w-4 text-orange-600" /> Unpublish
+                                                    </DropdownMenuItem>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
                             ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
-                                    No books found. Add some books to see them here!
-                                </TableCell>
-                            </TableRow>
                         )}
                     </TableBody>
                 </Table>
             </div>
-
-            {/* Edit Modal - Status Field Removed */}
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
-                        <DialogTitle>Update Book Details</DialogTitle>
-                        <DialogDescription>
-                            Make changes to your book here. Click save when you're done.
-                        </DialogDescription>
+                        <DialogTitle>Edit Book</DialogTitle>
+                        <DialogDescription>Update the details for your book listing.</DialogDescription>
                     </DialogHeader>
-
-                    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
-                        {/* Title */}
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="title" className="text-right">Title</Label>
-                            <Input id="title" className="col-span-3" {...register("title", { required: true })} />
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+                        <div className="flex gap-4">
+                            <div className="w-1/3 shrink-0">
+                                <div className="aspect-2/3 w-full rounded-md border bg-muted overflow-hidden relative">
+                                    {watchedImage ? (
+                                        <img src={watchedImage} alt="Preview" className="h-full w-full object-cover" />
+                                    ) : (
+                                        <div className="flex h-full items-center justify-center text-xs text-muted-foreground">No Preview</div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="w-2/3 space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="title">Title</Label>
+                                    <Input id="title" {...register("title", { required: true })} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="price">Price ($)</Label>
+                                    <Input id="price" type="number" step="0.01" {...register("price", { required: true })} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="image">Image URL</Label>
+                                    <Input id="image" {...register("image", { required: true })} />
+                                </div>
+                            </div>
                         </div>
-
-                        {/* Author (Read Only) */}
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="author" className="text-right">Author</Label>
-                            <Input id="author" className="col-span-3 bg-muted" readOnly {...register("author")} />
-                        </div>
-
-                        {/* Price */}
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="price" className="text-right">Price</Label>
-                            <Input id="price" type="number" className="col-span-3" {...register("price", { required: true })} />
-                        </div>
-
-                        {/* Image URL */}
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="image" className="text-right">Image URL</Label>
-                            <Input id="image" className="col-span-3" {...register("image", { required: true })} />
-                        </div>
-
-                        {/* STATUS FIELD REMOVED FROM HERE */}
-
                         <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
                             <Button type="submit" disabled={updateMutation.isPending}>
                                 {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 Save Changes

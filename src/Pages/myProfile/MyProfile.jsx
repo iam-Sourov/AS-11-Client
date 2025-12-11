@@ -1,19 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { Camera, Loader2, Mail, User, ShieldCheck } from "lucide-react";
+
 import { AuthContext } from "../../contexts/AuthContext";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import useRole from "../../hooks/useRole";
+
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { toast } from "sonner";
-import axios from "axios";
+import { Separator } from "@/components/ui/separator";
 
 const MyProfile = () => {
   const { user, setUser, updateUser } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
+  const role = useRole();
+  const fileInputRef = useRef(null);
 
-  const [name, setName] = useState(user?.displayName);
+  const [name, setName] = useState(user?.displayName || "");
   const [imagePreview, setImagePreview] = useState(user?.photoURL);
   const [imageFile, setImageFile] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -25,8 +32,14 @@ const MyProfile = () => {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleUpdateProfile = async () => {
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
     setIsUpdating(true);
+
     try {
       let imageURL = user.photoURL;
       if (imageFile) {
@@ -41,7 +54,7 @@ const MyProfile = () => {
       await updateUser({
         displayName: name,
         photoURL: imageURL
-      })
+      });
       const updatedUser = {
         name,
         photoURL: imageURL,
@@ -50,65 +63,99 @@ const MyProfile = () => {
       if (res.data.modifiedCount > 0 || imageFile) {
         const newUserData = { ...user, displayName: name, photoURL: imageURL };
         setUser(newUserData);
-        toast.success("Profile updated successfully!");
+        toast.success("Profile updated successfully");
       } else {
-        toast.info("No changes were made to the database.");
+        toast.info("No changes detected");
       }
     } catch (err) {
       console.error("Update Error:", err);
-      toast.error("Profile update failed. Please try again.");
+      toast.error("Failed to update profile");
     } finally {
       setIsUpdating(false);
     }
   };
+
   return (
-    <div className="max-w-2xl mx-auto mt-10 px-4">
-      <Card className="rounded-2xl shadow-lg border border-gray-200">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            My Profile
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex flex-col items-center gap-3">
-            <Avatar className="h-28 w-28 border border-gray-300 shadow">
-              <AvatarImage src={imagePreview} />
-              <AvatarFallback className="text-xl">
-                {name?.slice(0, 1) || "U"}
-              </AvatarFallback>
-            </Avatar>
-            <Label
-              htmlFor="photo"
-              className="cursor-pointer text-primary underline hover:text-primary/80">
-              Change Profile Photo
-            </Label>
-            <Input
-              id="photo"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+    <div className="flex justify-center py-10 px-4 min-h-[80vh] bg-background">
+      <Card className="w-full max-w-2xl overflow-hidden border-none shadow-md sm:border sm:shadow-sm">
+        <div className="h-32 bg-linear-to-r from-blue-600 to-indigo-600 opacity-90 relative">
+          <div className="absolute inset-0 bg-grid-white/10 mask-[linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
+        </div>
+        <div className="relative px-6 pb-6">
+          <div className="-mt-16 mb-6 flex flex-col items-center sm:items-start sm:flex-row sm:gap-6">
+            <div className="relative group">
+              <Avatar className="h-32 w-32 border-4 border-background shadow-xl cursor-pointer">
+                <AvatarImage src={imagePreview} className="object-cover" />
+                <AvatarFallback className="text-4xl bg-muted text-muted-foreground">
+                  {name?.slice(0, 1)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div
+                onClick={triggerFileInput}
+                className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border-4 border-transparent">
+                <Camera className="text-white h-8 w-8" />
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageChange} />
+            </div>
+            <div className="mt-4 text-center sm:mt-16 sm:text-left">
+              <h1 className="text-2xl font-bold tracking-tight mb-1">{user?.displayName || "User"}</h1>
+              <p className="text-sm text-muted-foreground flex items-center justify-center sm:justify-start gap-1.5">
+                <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
+                {role[0] || "Member"} Account
+              </p>
+            </div>
           </div>
-          <div className="grid gap-2">
-            <Label>Full Name</Label>
-            <Input
-              defaultValue={user.displayName}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label>Email Address</Label>
-            <Input value={user.email} readOnly className="bg-gray-100" />
-          </div>
-          <Button
-            className="w-full mt-4"
-            onClick={handleUpdateProfile}
-            disabled={isUpdating}>
-            {isUpdating ? "Updating..." : "Update Profile"}
-          </Button>
-        </CardContent>
+          <Separator className="my-6" />
+          <CardContent className="p-0">
+            <form onSubmit={handleUpdateProfile} className="space-y-6">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    Full Name
+                  </Label>
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your full name"
+                    className="bg-background"/>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    value={user?.email}
+                    disabled
+                    className="bg-muted/50 text-muted-foreground cursor-not-allowed"/>
+                </div>
+              </div>
+              <div className="flex justify-end pt-4">
+                <Button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="w-full sm:w-auto min-w-[140px]">
+                  {isUpdating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </div>
       </Card>
     </div>
   );

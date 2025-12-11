@@ -1,6 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import {
+  Search,
+  ShoppingCart,
+  X,
+  BookOpen,
+  Star,
+  Filter
+} from 'lucide-react';
+
+import { Card } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -13,9 +23,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
-import { toast } from 'sonner';
-import { Search } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -25,13 +36,13 @@ const AllBooks = () => {
 
   const [selectedBook, setSelectedBook] = useState(null);
   const [orderBook, setOrderBook] = useState(null);
-
   const [search, setSearch] = useState('');
+
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
 
-  const { data: books = [], isLoading, isError, error } = useQuery({
+  const { data: books = [], isLoading, isError } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
       const res = await axiosSecure.get('/books');
@@ -40,27 +51,24 @@ const AllBooks = () => {
   });
 
   const publishedBooks = books.filter(b => b.status === 'published');
-
   const displayedBooks = publishedBooks.filter((b) =>
     b.title.toLowerCase().includes(search.toLowerCase()) ||
     b.author.toLowerCase().includes(search.toLowerCase())
   );
 
-  // PLACE ORDER FUNCTION
   const handlePlaceOrder = async () => {
     if (!phone || !address) {
-      toast.error("Please fill in phone and address");
+      toast.error("Please provide delivery details.");
       return;
     }
 
     setIsOrdering(true);
-
     const orderData = {
       name: user.displayName,
       email: user.email,
       phone,
       address,
-      author: orderBook.author,     // AUTHOR SENT CORRECTLY
+      author: orderBook.author,
       bookId: orderBook._id,
       bookTitle: orderBook.title,
       price: orderBook.price,
@@ -72,163 +80,223 @@ const AllBooks = () => {
 
     try {
       const res = await axiosSecure.post('/orders', orderData);
-
       if (res.data.insertedId === null) {
         toast.error("You have already ordered this book.");
-        setIsOrdering(false);
-        return;
+      } else {
+        toast.success("Order placed successfully!");
+        setOrderBook(null);
+        setPhone('');
+        setAddress('');
       }
-
-      toast.success(`Order placed successfully for: ${orderBook.title}`);
-      setOrderBook(null);
-      setPhone('');
-      setAddress('');
-
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to place order. Please try again.");
+      toast.error("Failed to place order.");
     } finally {
       setIsOrdering(false);
     }
   };
 
-  if (isLoading)
-    return <div className="p-8 flex items-center justify-center text-center"><Spinner /></div>;
+  const openOrderModal = (book) => {
+    setSelectedBook(null); // Close details if open
+    setOrderBook(book);
+  };
 
-  if (isError)
-    return <div className="p-8 text-red-500 text-center">Error: {error.message}</div>;
+  if (isLoading) return (
+    <div className="flex h-[80vh] w-full items-center justify-center">
+      <Spinner size="lg" />
+    </div>
+  );
+
+  if (isError) return (
+    <div className="flex h-[50vh] flex-col items-center justify-center gap-2 text-destructive">
+      <p>Failed to load library data.</p>
+      <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+    </div>
+  );
 
   return (
-    <div>
-      <h1 className='text-3xl font-bold mt-6 mb-4 text-center'>All Books</h1>
-
-      {/* SEARCH BAR */}
-      <div className="flex justify-center mb-6">
-        <div className="relative w-full max-w-md ">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+    <div className="container mx-auto px-4 py-8 min-h-screen">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Library Collection</h1>
+          <p className="text-muted-foreground mt-1">Browse and discover your next read.</p>
+        </div>
+        <div className="relative w-full md:w-96">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            type="search"
-            placeholder="Search by title or author..."
-            className="pl-9 rounded-full border border-gray-600 focus-visible:ring-offset-0"
+            placeholder="Search title or author..."
+            className="pl-9 pr-9 bg-background"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-foreground text-muted-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
-
-      {/* BOOK GRID */}
-      <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {displayedBooks.map((b) => (
-          <Card key={b._id} className="shadow-lg rounded-2xl overflow-hidden flex flex-col h-full hover:shadow-xl transition-shadow duration-300">
-            <img src={b.image} alt={b.title} className="w-full h-52 object-cover" />
-            <CardContent className="p-4 flex flex-col grow">
-              <h2 className="font-bold text-xl line-clamp-1">{b.title}</h2>
-              <p className="text-gray-600 text-sm mt-1">By {b.author}</p>
-              <p className="text-gray-500 text-sm mt-2 line-clamp-2 grow">{b.description}</p>
-
-              <div className="flex justify-between items-center mt-3">
-                <span className="font-bold text-primary">{b.price}$</span>
-                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">{b.category}</span>
+      {displayedBooks.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground border-2 border-dashed rounded-xl">
+          <BookOpen className="h-10 w-10 mb-4 opacity-20" />
+          <p>No books found matching "{search}"</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {displayedBooks.map((book) => (
+            <Card
+              key={book._id}
+              className="group flex flex-col overflow-hidden border bg-card transition-all hover:shadow-lg hover:border-primary/20">
+              <div className="relative aspect-4/5 overflow-hidden bg-muted">
+                <img
+                  src={book.image}
+                  alt={book.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <Badge className="absolute top-3 right-3 shadow-sm bg-background/90 text-foreground hover:bg-background backdrop-blur-sm">
+                  ${book.price}
+                </Badge>
               </div>
 
-              <Button className="mt-4 w-full" onClick={() => setSelectedBook(b)}>
-                View Details
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* DETAILS MODAL */}
-      <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
-        <DialogContent className="rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
-          {selectedBook && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold">{selectedBook.title}</DialogTitle>
-              </DialogHeader>
-
-              <div className="flex flex-col md:flex-row gap-6 mt-4">
-                <div className="w-full md:w-1/2">
-                  <img src={selectedBook.image} className="w-full rounded-xl object-cover shadow-md" alt={selectedBook.title} />
+              <div className="flex flex-1 flex-col p-5">
+                <div className="flex justify-between items-start gap-2">
+                  <div className="space-y-1">
+                    <h3 className="font-semibold leading-tight line-clamp-1 group-hover:text-primary transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{book.author}</p>
+                  </div>
                 </div>
 
-                <div className="flex-1 space-y-3 text-sm">
-                  <p className="leading-relaxed text-gray-700">{selectedBook.description}</p>
-
-                  <div className="pt-2 space-y-2">
-                    <p><span className="font-semibold">Author:</span> {selectedBook.author}</p>
-                    <p><span className="font-semibold">Category:</span> {selectedBook.category}</p>
-                    <p><span className="font-semibold">Rating:</span> ⭐ {selectedBook.rating}</p>
-
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold">Price:</span>
-                      <span className="text-xl font-bold text-green-600">${selectedBook.price}</span>
-                    </div>
-                  </div>
-
+                <div className="mt-4 flex flex-1 items-end">
                   <Button
-                    className="w-full mt-6"
-                    onClick={() => {
-                      setOrderBook(selectedBook);  // correctly set book
-                      setSelectedBook(null);       // close details modal
-                    }}
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => setSelectedBook(book)}
                   >
-                    Order Now
+                    View Details
                   </Button>
                 </div>
               </div>
-            </>
-          )}
+            </Card>
+          ))}
+        </div>
+      )}
+      <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden gap-0">
+          <div className="grid md:grid-cols-2 h-full">
+            {selectedBook && (
+              <>
+                <div className="bg-muted h-64 md:h-full relative group">
+                  <img
+                    src={selectedBook.image}
+                    alt={selectedBook.title}
+                    className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent md:hidden" />
+                </div>
+                <div className="p-6 md:p-8 flex flex-col h-full">
+                  <DialogHeader className="mb-4 text-left">
+                    <div className="flex justify-between items-start">
+                      <Badge variant="outline" className="mb-2">{selectedBook.category}</Badge>
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <Star className="h-4 w-4 fill-current" />
+                        <span className="text-sm font-medium text-foreground">{selectedBook.rating}</span>
+                      </div>
+                    </div>
+                    <DialogTitle className="text-2xl md:text-3xl font-bold">{selectedBook.title}</DialogTitle>
+                    <p className="text-muted-foreground text-lg">by {selectedBook.author}</p>
+                  </DialogHeader>
+                  <div className="flex-1 overflow-y-auto pr-2">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {selectedBook.description}
+                    </p>
+                  </div>
+                  <Separator className="my-6" />
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="text-2xl font-bold">${selectedBook.price}</div>
+                    <Button
+                      size="lg"
+                      className="px-8"
+                      onClick={() => openOrderModal(selectedBook)}>
+                      Buy Now
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
-
-      {/* ORDER MODAL */}
       <Dialog open={!!orderBook} onOpenChange={(open) => !open && setOrderBook(null)}>
-        <DialogContent className="rounded-2xl max-w-md">
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Confirm Order</DialogTitle>
+            <DialogTitle>Checkout</DialogTitle>
             <DialogDescription>
-              Complete your purchase for <span className="font-semibold text-primary">{orderBook?.title}</span>.
+              Complete your purchase for <span className="font-medium text-foreground">{orderBook?.title}</span>
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input value={user?.displayName || ''} readOnly className="bg-gray-100 cursor-not-allowed" />
+          <div className="grid gap-5 py-4">
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Name</Label>
+                  <div className="text-sm font-medium p-2 bg-muted rounded-md truncate">
+                    {user?.displayName}
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Email</Label>
+                  <div className="text-sm font-medium p-2 bg-muted rounded-md truncate">
+                    {user?.email}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+880..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Delivery Address</Label>
+                <Textarea
+                  id="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Street, City, Zip"
+                  className="resize-none min-h-20"
+                />
+              </div>
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input value={user?.email || ''} readOnly className="bg-gray-100 cursor-not-allowed" />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                placeholder="Enter your phone number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="address">Delivery Address</Label>
-              <Textarea
-                id="address"
-                placeholder="Enter full address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
+            <div className="bg-muted/50 p-3 rounded-lg flex justify-between items-center text-sm">
+              <span>Total to pay:</span>
+              <span className="font-bold text-lg">${orderBook?.price}</span>
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOrderBook(null)}>Cancel</Button>
-            <Button onClick={handlePlaceOrder} disabled={isOrdering}>
-              {isOrdering ? <Spinner className="mr-2 h-4 w-4" /> : "Place Order"}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setOrderBook(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handlePlaceOrder} disabled={isOrdering} className="w-full sm:w-auto">
+              {isOrdering ? (
+                <>
+                  <Spinner className="mr-2 h-4 w-4" /> Processing
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="mr-2 h-4 w-4" /> Place Order
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -42,7 +42,7 @@ const Navbar = () => {
     return (
         <nav className=" w-full flex justify-between items-center backdrop-blur-md border-b p-3 sticky top-0 z-50 bg-background/80">
             <Link to="/" className="text-xl font-bold flex items-center gap-2">
-                BookCourier
+                BookLibrary 
             </Link>
             <div className="hidden md:flex justify-center items-center">
                 <Menubar className="border-2 rounded-xl flex justify-center items-center space-x-6 font-medium ">
@@ -141,7 +141,7 @@ const Navbar = () => {
                                         variant="destructive"
                                         onClick={handleSignOut}
                                         className="w-full flex items-center gap-2">
-                                         Logout
+                                        Logout
                                     </Button>
                                 )}
                             </div>

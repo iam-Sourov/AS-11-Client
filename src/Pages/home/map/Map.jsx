@@ -1,13 +1,42 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { motion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 const Map = () => {
   const cities = [
-    { name: "Dhaka", position: [23.8103, 90.4125] },
-    { name: "Chittagong", position: [22.3569, 91.7832] },
-    { name: "Sylhet", position: [24.8949, 91.8687] },
-    { name: "Rajshahi", position: [24.3745, 88.6042] }
+    { name: "Dhaka", pos: [23.8103, 90.4125] },
+    { name: "Gazipur", pos: [24.0958, 90.4125] },
+    { name: "Narayanganj", pos: [23.6238, 90.5000] },
+    { name: "Tangail", pos: [24.2513, 89.9167] },
+    { name: "Faridpur", pos: [23.6071, 89.8429] },
+    { name: "Narsingdi", pos: [23.9322, 90.7154] },
+    { name: "Manikganj", pos: [23.8644, 90.0047] },
+    { name: "Munshiganj", pos: [23.5422, 90.5305] },
+    { name: "Chittagong", pos: [22.3569, 91.7832] },
+    { name: "Comilla", pos: [23.4607, 91.1809] },
+    { name: "Cox's Bazar", pos: [21.4272, 92.0058] },
+    { name: "Feni", pos: [23.0186, 91.3966] },
+    { name: "Brahmanbaria", pos: [23.9571, 91.1119] },
+    { name: "Noakhali", pos: [22.8724, 91.0973] },
+    { name: "Chandpur", pos: [23.2321, 90.6631] },
+    { name: "Lakshmipur", pos: [22.9447, 90.8282] },
+    { name: "Sylhet", pos: [24.8949, 91.8687] },
+    { name: "Moulvibazar", pos: [24.4829, 91.7774] },
+    { name: "Habiganj", pos: [24.3749, 91.4155] },
+    { name: "Sunamganj", pos: [25.0658, 91.3950] },
+    { name: "Rajshahi", pos: [24.3745, 88.6042] },
+    { name: "Bogra", pos: [24.8481, 89.3730] },
+    { name: "Pabna", pos: [24.0040, 89.2500] },
+    { name: "Sirajganj", pos: [24.4534, 89.7008] },
+    { name: "Khulna", pos: [22.8456, 89.5403] },
+    { name: "Jessore", pos: [23.1634, 89.2182] },
+    { name: "Kushtia", pos: [23.9013, 89.1204] },
+    { name: "Satkhira", pos: [22.7185, 89.0705] },
+    { name: "Barisal", pos: [22.7010, 90.3535] },
+    { name: "Patuakhali", pos: [22.3596, 90.3299] },
+    { name: "Rangpur", pos: [25.7439, 89.2752] },
+    { name: "Dinajpur", pos: [25.6217, 88.6355] },
+    { name: "Mymensingh", pos: [24.7471, 90.4203] },
+    { name: "Jamalpur", pos: [24.9375, 89.9378] },
   ];
   return (
     <section className="w-full p-6 rounded-2xl shadow-md mt-10">
@@ -15,10 +44,9 @@ const Map = () => {
       <div className="w-full h-[400px] rounded-2xl overflow-hidden shadow-lg">
         <MapContainer center={[23.8103, 90.4125]} zoom={7} className="w-full h-full">
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
           {cities.map((city, i) => (
-            <Marker key={i} position={city.position}>
+            <Marker key={i} position={city.pos}>
               <Popup>{city.name}</Popup>
             </Marker>
           ))}

@@ -1,71 +1,108 @@
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, XIcon } from 'lucide-react';
 import React from 'react';
 import { NavLink } from 'react-router';
-
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  XIcon,
+  Library
+} from 'lucide-react';
+// The official X (Twitter) Logo
+const XLogo = ({ className }) => (
+  <svg
+    role="img"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+  </svg>
+);
 const Footer = () => {
-
   return (
-    <footer className="bg-slate-950 text-slate-200 p-6 border-t border-slate-800">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <footer className="bg-zinc-950 border-t border-zinc-900 pt-16 pb-8">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="flex flex-col space-y-4">
-            <h2 className="text-2xl font-bold text-white mb-2">BookLibrary</h2>
-            <nav className="flex flex-col space-y-2 text-sm text-slate-400">
-              <NavLink to="/" className="hover:text-blue-500 transition-colors">Home</NavLink>
-              <NavLink to="/addTransaction" className="hover:text-blue-500 transition-colors">Browse Books</NavLink>
-              <NavLink to="/dashboard" className="hover:text-blue-500 transition-colors">Dashboard</NavLink>
-              <NavLink to="/login" className="hover:text-blue-500 transition-colors">Login / Register</NavLink>
+            <div className="flex items-center gap-2 text-white">
+              <Library className="h-6 w-6 text-blue-500" />
+              <span className="text-xl font-bold tracking-tight">BookLibrary</span>
+            </div>
+            <p className="text-sm text-zinc-400 leading-relaxed max-w-xs">
+              Connecting readers with stories. We provide the fastest book delivery service and a curated collection for every genre.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Platform</h3>
+            <nav className="flex flex-col space-y-3">
+              <FooterLink to="/">Home</FooterLink>
+              <FooterLink to="/all-books">Browse Collection</FooterLink>
+              <FooterLink to="/dashboard">User Dashboard</FooterLink>
+              <FooterLink to="/">Pricing & Plans</FooterLink>
             </nav>
           </div>
-
-          <div className="flex flex-col space-y-4">
-            <h3 className="text-lg font-semibold text-white">Contact Us</h3>
-            <div className="space-y-3 text-sm text-slate-400">
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-5 w-5 text-blue-500" />
-                <span>123 Library Avenue, Knowledge City, 1200</span>
+          <div>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Support</h3>
+            <nav className="flex flex-col space-y-3">
+              <FooterLink to="/login">Login / Register</FooterLink>
+              <FooterLink to="/">Help Center</FooterLink>
+              <FooterLink to="/">Terms of Service</FooterLink>
+              <FooterLink to="/">Privacy Policy</FooterLink>
+            </nav>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Contact</h3>
+            <div className="flex flex-col space-y-4 text-sm text-zinc-400">
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-blue-500 shrink-0" />
+                <span>123 Library Avenue,<br />Knowledge City, 1200</span>
               </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-blue-500" />
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-blue-500 shrink-0" />
                 <span>+880 1234 567 890</span>
               </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-blue-500" />
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-blue-500 shrink-0" />
                 <span>support@booklibrary.com</span>
               </div>
             </div>
           </div>
-
-          <div className="flex flex-col space-y-4">
-            <h3 className="text-lg font-semibold text-white">Follow Us</h3>
-            <p className="text-sm text-slate-400 mb-2">
-              Stay connected for new arrivals and updates.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-blue-600 hover:text-white transition-all">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-pink-600 hover:text-white transition-all">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-black hover:text-white transition-all">
-                <XIcon className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-blue-700 hover:text-white transition-all">
-                <Linkedin className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
         </div>
-
-        <div className="border-t border-slate-800 pt-8 text-center">
-          <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} BookLibrary. All rights reserved.
+        <div className="border-t border-zinc-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-zinc-500">
+            &copy; {new Date().getFullYear()} BookLibrary Inc. All rights reserved.
           </p>
+          <div className="flex space-x-6">
+            <SocialLink href="#" icon={<Facebook className="h-5 w-5" />} label="Facebook" />
+            <SocialLink href="#" icon={<Instagram className="h-5 w-5" />} label="Instagram" />
+            <SocialLink href="#" icon={<XLogo className="h-4 w-4" />} label="X (Twitter)" />
+            <SocialLink href="#" icon={<Linkedin className="h-5 w-5" />} label="LinkedIn" />
+          </div>
         </div>
       </div>
     </footer>
   );
 };
+
+const FooterLink = ({ to, children }) => (
+  <NavLink
+    to={to}
+    className="text-sm text-zinc-400 hover:text-blue-400 transition-colors duration-200 w-fit">
+    {children}
+  </NavLink>
+);
+
+const SocialLink = ({ href, icon, label }) => (
+  <a
+    href={href}
+    aria-label={label}
+    className="text-zinc-500 hover:text-white transition-colors duration-200 hover:scale-110 transform">
+    {icon}
+  </a>
+);
 
 export default Footer;
