@@ -1,9 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import AuthProvider from './contexts/AuthContext'
 import router from './Routes/Routes'
 import { RouterProvider } from 'react-router'
-import AuthProvider from './Contexts/AuthProvider'
+
 import {
   QueryClient,
   QueryClientProvider,
