@@ -17,7 +17,7 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "@/components/ui/Avatar";
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AuthContext } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
