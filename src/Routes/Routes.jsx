@@ -17,6 +17,7 @@ import Stats from "../Pages/dashboards/stats/stats";
 import Invoices from "../Pages/dashboards/user/Invoices";
 import PaymentSuccess from "../Pages/dashboards/payment/PaymentSuccess";
 import PaymentCancel from "../Pages/dashboards/payment/PaymentCancel";
+import MyWishlist from "../Pages/dashboards/user/MyWishlist";
 
 
 const router = createBrowserRouter([
@@ -104,6 +105,12 @@ const router = createBrowserRouter([
                 path: "my-invoices",
                 element: <PrivateRoute >
                     <Invoices></Invoices>
+                </PrivateRoute>,
+            },
+            {
+                path: "my-wishlist",
+                element: <PrivateRoute >
+                    <MyWishlist></MyWishlist>
                 </PrivateRoute>,
             },
             {

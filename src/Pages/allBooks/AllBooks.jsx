@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // Import useMutation and useQueryClient
 import { toast } from 'sonner';
 import {
   Search,
@@ -7,9 +7,8 @@ import {
   X,
   BookOpen,
   Star,
-  Filter
+  Heart
 } from 'lucide-react';
-
 import { Card } from '@/components/ui/card';
 import {
   Dialog,
@@ -26,18 +25,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
 import { Separator } from '@/components/ui/separator';
-
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const AllBooks = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
   const [selectedBook, setSelectedBook] = useState(null);
   const [orderBook, setOrderBook] = useState(null);
   const [search, setSearch] = useState('');
-
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
@@ -50,11 +48,58 @@ const AllBooks = () => {
     }
   });
 
+  const { data: wishlist = [] } = useQuery({
+    queryKey: ['wishlist', user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/wishlist?email=${user.email}`);
+      return res.data;
+    }
+  });
+
   const publishedBooks = books.filter(b => b.status === 'published');
   const displayedBooks = publishedBooks.filter((b) =>
     b.title.toLowerCase().includes(search.toLowerCase()) ||
     b.author.toLowerCase().includes(search.toLowerCase())
   );
+
+  const addToWishlistMutation = useMutation({
+    mutationFn: async (book) => {
+      const wishlistItem = {
+        bookId: book._id,
+        title: book.title,
+        image: book.image,
+        author: book.author,
+        price: book.price,
+        category: book.category,
+        rating: book.rating,
+        userEmail: user.email,
+        userName: user.displayName,
+        addedDate: new Date().toISOString()
+      }
+      return await axiosSecure.post('/wishlist', wishlistItem);
+    },
+    onSuccess: () => {
+      toast.success("Book added to wishlist!");
+      queryClient.invalidateQueries(['wishlist']);
+    },
+    onError: (error) => {
+      if (error.response && error.response.status === 409) {
+        toast.error("This book is already in your wishlist.");
+      } else {
+        toast.error("Failed to add to wishlist.");
+      }
+    }
+  });
+
+  const handleAddToWishlist = (book) => {
+    if (!user) {
+      toast.error("Please login to add to wishlist");
+      return;
+    }
+    addToWishlistMutation.mutate(book);
+  };
+
 
   const handlePlaceOrder = async () => {
     if (!phone || !address) {
@@ -184,6 +229,8 @@ const AllBooks = () => {
           ))}
         </div>
       )}
+
+      {/* Book Details Modal */}
       <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden gap-0">
           <div className="grid md:grid-cols-2 h-full">
@@ -216,12 +263,30 @@ const AllBooks = () => {
                   <Separator className="my-6" />
                   <div className="flex items-center justify-between gap-4">
                     <div className="text-2xl font-bold">${selectedBook.price}</div>
-                    <Button
-                      size="lg"
-                      className="px-8"
-                      onClick={() => openOrderModal(selectedBook)}>
-                      Buy Now
-                    </Button>
+
+                    <div className="flex gap-2">
+                      {/* Wishlist Button */}
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleAddToWishlist(selectedBook)}
+                        disabled={addToWishlistMutation.isPending}
+                        title="Add to Wishlist"
+                      >
+                        {addToWishlistMutation.isPending ? (
+                          <Spinner className="h-4 w-4" />
+                        ) : (
+                          <Heart className={`h-5 w-5 ${wishlist.some(item => item.bookId === selectedBook._id) ? "fill-red-500 text-red-500" : ""}`} />
+                        )}
+                      </Button>
+
+                      <Button
+                        size="lg"
+                        className="px-8"
+                        onClick={() => openOrderModal(selectedBook)}>
+                        Buy Now
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </>
@@ -229,6 +294,8 @@ const AllBooks = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Order Modal */}
       <Dialog open={!!orderBook} onOpenChange={(open) => !open && setOrderBook(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

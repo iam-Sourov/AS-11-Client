@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   ShoppingBag,
   ReceiptText,
+  Heart
 } from "lucide-react";
 import {
   Sidebar,
@@ -45,6 +46,7 @@ function AppSidebar() {
     { title: "Home", to: "/", icon: Home },
     { title: "My-Orders", to: "/dashboard/my-orders", icon: ShoppingBag },
     { title: "My-Invoices", to: "/dashboard/my-invoices", icon: ReceiptText },
+    { title: "My-Wishlists", to: "/dashboard/my-wishlist", icon: Heart },
     { title: "My-Profile", to: "/dashboard/my-profile", icon: LayoutDashboard },
   ];
 
