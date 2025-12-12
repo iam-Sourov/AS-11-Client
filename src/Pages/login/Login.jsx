@@ -58,7 +58,7 @@ const Login = () => {
     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
       <div className="hidden bg-muted lg:block relative h-full overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1507842217121-9eac59e749e5?q=80&w=1000&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2000&auto=format&fit=crop"
           alt="Library"
           className="h-full w-full object-cover grayscale-20% hover:grayscale-0 transition-all duration-1000" />
         <div className="absolute inset-0 bg-zinc-900/40" />

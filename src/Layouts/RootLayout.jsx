@@ -1,24 +1,26 @@
 import { useContext } from 'react';
-import Navbar from '../components/navbar/Navbar';
 import { Outlet } from 'react-router';
-import { Spinner } from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/spinner";
 import { AuthContext } from '../contexts/AuthContext';
+import Navbar from '../components/navbar/Navbar';
 import Footer from '../components/footer/Footer';
 
 const RootLayout = () => {
     const { loading } = useContext(AuthContext);
 
     if (loading) {
-        return <div className="min-h-screen backdrop-blur-3xl flex items-center justify-center text-xl">
-            <Spinner></Spinner>
-        </div>
+        return (
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+                <Spinner size="lg" className="text-primary"></Spinner>
+            </div>
+        );
     }
     return (
-        <div className='min-h-screen '>
+        <div className="flex min-h-screen flex-col bg-background font-sans antialiased">
             <header>
                 <Navbar></Navbar>
             </header>
-            <main className=' min-h-[calc(100vh-200px)]'>
+            <main className="flex-1 w-full">
                 <Outlet></Outlet>
             </main>
             <footer>
@@ -27,4 +29,5 @@ const RootLayout = () => {
         </div>
     );
 };
+
 export default RootLayout;
