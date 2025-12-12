@@ -100,7 +100,7 @@ const Navbar = () => {
                                         <BookOpen className="h-5 w-5 text-primary" /> BookLibrary
                                     </SheetTitle>
                                 </SheetHeader>
-                                <div className="flex flex-col gap-6 mt-8">
+                                <div className="flex flex-col justify-center items-center gap-6 mt-8">
                                     <NavLink to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
                                         Home
                                     </NavLink>

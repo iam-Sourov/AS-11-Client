@@ -29,12 +29,12 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-16 md:py-24 bg-muted/30 border-y">
+    <section className="py-16 md:py-24 bg-muted/30 border-y rounded-xl">
       <div className="text-center mb-16">
         <h2 className="text-3xl font-bold tracking-tight">Community Voices</h2>
         <p className="text-muted-foreground mt-2">What our 50,000+ happy readers are saying</p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-6">
         {testimonials.map((review, i) => (
           <Card key={i} className="relative bg-background border-none shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-12 px-8 pb-8">
