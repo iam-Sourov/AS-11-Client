@@ -39,7 +39,7 @@ const Testimonials = () => {
           <Card key={i} className="relative bg-background border-none shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-12 px-8 pb-8">
               <div className="absolute top-6 left-8">
-                <Quote className="h-8 w-8 text-primary/10 fill-primary/10 rotate-180" />
+                <Quote className="h-8 w-8 text-primary fill-primary/10 rotate-180" />
               </div>
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (

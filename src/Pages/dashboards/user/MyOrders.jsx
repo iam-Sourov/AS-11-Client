@@ -7,9 +7,11 @@ import {
   Truck,
   CheckCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  CreditCard,
+  Ban,
+  Loader2
 } from "lucide-react";
-
 import {
   Table,
   TableBody,
@@ -40,6 +42,7 @@ const MyOrders = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
   const [cancelId, setCancelId] = useState(null);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(null);
 
   const { data: orders = [], refetch, isLoading } = useQuery({
     queryKey: ["my-orders", user?.email],
@@ -49,6 +52,7 @@ const MyOrders = () => {
     },
     refetchInterval: 5000,
   });
+
   const handleCancel = async () => {
     if (!cancelId) return;
 
@@ -61,6 +65,28 @@ const MyOrders = () => {
       toast.error("Failed to cancel order");
     } finally {
       setCancelId(null);
+    }
+  };
+
+  const handlePayment = async (order) => {
+    setIsPaymentLoading(order._id);
+    try {
+      const paymentData = {
+        _id: order._id,
+        email: user.email,
+        price: order.price,
+        bookTitle: order.bookTitle,
+        image: order.image
+      };
+      const res = await axiosSecure.post('/payment-checkout-session', paymentData);
+      if (res.data?.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to initiate payment");
+    } finally {
+      setIsPaymentLoading(null);
     }
   };
 
@@ -100,12 +126,13 @@ const MyOrders = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="">SL</TableHead>
-                <TableHead className="w-[350px]">Product</TableHead>
+                <TableHead className="w-[50px]">SL</TableHead>
+                <TableHead className="w-[300px]">Product</TableHead>
                 <TableHead>Order Date</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Payment</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,16 +144,16 @@ const MyOrders = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-9 rounded overflow-hidden bg-muted border">
+                        <div className="h-12 w-9 rounded overflow-hidden bg-muted border shrink-0">
                           <img
                             src={order.image}
                             alt={order.bookTitle}
                             className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                         </div>
-                        <span className="font-medium text-foreground">{order.bookTitle}</span>
+                        <span className="font-medium text-foreground line-clamp-2">{order.bookTitle}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell className="text-muted-foreground whitespace-nowrap">
                       {order.date ? format(new Date(order.date), "MMM dd, yyyy") : "N/A"}
                     </TableCell>
                     <TableCell className="font-medium">
@@ -136,18 +163,62 @@ const MyOrders = () => {
                       {getStatusBadge(order.status)}
                     </TableCell>
                     <TableCell>
-                      <div className={`text-xs font-semibold px-2 py-1 rounded-full w-fit ${order.payment_status === 'paid'
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-amber-600 bg-amber-50"
+                      {/* PAYMENT STATUS BADGE */}
+                      <div className={`text-xs font-semibold px-2 py-1 rounded-full w-fit flex items-center gap-1 ${order.payment_status === 'paid'
+                        ? "text-emerald-600 bg-emerald-50 border border-emerald-100"
+                        : "text-amber-600 bg-amber-50 border border-amber-100"
                         }`}>
+                        {order.payment_status === 'paid' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
                         {order.payment_status === 'paid' ? "PAID" : "UNPAID"}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        {/* Logic: 
+                                1. If Cancelled -> Hide all buttons
+                                2. If Pending -> Show Cancel
+                                3. If Pending AND Unpaid -> Show Pay Now 
+                            */}
+
+                        {order.status !== 'cancelled' && (
+                          <>
+                            {order.status === 'pending' && order.payment_status !== 'paid' && (
+                              <Button
+                                size="sm"
+                                className="bg-primary hover:bg-primary/90 h-8"
+                                onClick={() => handlePayment(order)}
+                                disabled={isPaymentLoading === order._id}
+                              >
+                                {isPaymentLoading === order._id ? (
+                                  <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                                ) : (
+                                  <CreditCard className="w-3 h-3 mr-1" />
+                                )}
+                                Pay Now
+                              </Button>
+                            )}
+                            {order.status !== 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="h-8"
+                                onClick={() => setCancelId(order._id)}>
+                                <Ban className="w-3 h-3 mr-1" />
+                                Cancel
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        {order.status === 'cancelled' && (
+                          <span className="text-xs text-muted-foreground italic pr-2">Order Cancelled</span>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-64 text-center">
+                  <TableCell colSpan={7} className="h-64 text-center">
                     <div className="flex flex-col items-center justify-center text-muted-foreground">
                       <Package className="h-12 w-12 mb-3 opacity-20" />
                       <p className="text-lg font-medium">No orders found</p>
@@ -181,6 +252,7 @@ const MyOrders = () => {
     </div>
   );
 };
+
 const OrdersSkeleton = () => (
   <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-6">
     <div className="space-y-2">

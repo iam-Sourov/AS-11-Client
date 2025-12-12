@@ -63,14 +63,14 @@ const Slider = () => {
         </p>
       </div>
       <div className="relative flex w-full flex-col gap-6">
-        <Marquee pauseOnHover className="[--duration:40s]">
+        <Marquee pauseOnHover className="[--duration:250s]">
           {books.map((book, idx) => (
             <div key={idx} className="mx-3">
               <BookCard book={book} />
             </div>
           ))}
         </Marquee>
-        <Marquee pauseOnHover reverse className="[--duration:40s]">
+        <Marquee pauseOnHover reverse className="[--duration:250s]">
           {books.map((book, idx) => (
             <div key={`${idx}-reverse`} className="mx-3">
               <BookCard book={book} />
