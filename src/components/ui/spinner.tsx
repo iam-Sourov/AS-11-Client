@@ -1,6 +1,5 @@
-import { LoaderIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
+import { LoaderIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   return (
@@ -10,7 +9,15 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
       className={cn("size-4 animate-spin", className)}
       {...props}
     />
-  )
+  );
+}
+export function SpinnerCustom() {
+  return (
+    <div className="flex items-center gap-4">
+      <Spinner />
+      <Spinner className="size-8 text-blue-500" />
+    </div>
+  );
 }
 
-export { Spinner }
+export { Spinner };

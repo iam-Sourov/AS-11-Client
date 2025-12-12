@@ -1,23 +1,19 @@
 import React from "react";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
 import { Marquee } from "@/components/ui/marquee";
-import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const BookCard = ({ book }) => (
   <Link
     to="/all-books"
-    className="group relative flex w-[280px] flex-col overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md hover:border-primary/50"
-  >
-    <div className="aspect-4/5 w-full overflow-hidden bg-muted">
+    className="group relative flex w-[280px] flex-col overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md hover:border-primary/50">
+    <div className="md:aspect-4/5 w-full overflow-hidden bg-muted">
       <img
         src={book.image}
         alt={book.title}
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
     </div>
     <div className="flex flex-1 flex-col p-4">
       <h3 className="line-clamp-1 text-base font-medium tracking-tight">
@@ -44,7 +40,7 @@ const Slider = () => {
   if (isLoading) {
     return (
       <div className="flex h-64 w-full items-center justify-center bg-background">
-        <Spinner size="lg" />
+        <Spinner size="4" />
       </div>
     );
   }

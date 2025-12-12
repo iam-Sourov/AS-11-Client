@@ -141,7 +141,7 @@ const AllBooks = () => {
   };
 
   const openOrderModal = (book) => {
-    setSelectedBook(null); // Close details if open
+    setSelectedBook(null);
     setOrderBook(book);
   };
 
@@ -229,8 +229,6 @@ const AllBooks = () => {
           ))}
         </div>
       )}
-
-      {/* Book Details Modal */}
       <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden gap-0">
           <div className="grid md:grid-cols-2 h-full">
@@ -265,21 +263,18 @@ const AllBooks = () => {
                     <div className="text-2xl font-bold">${selectedBook.price}</div>
 
                     <div className="flex gap-2">
-                      {/* Wishlist Button */}
                       <Button
                         variant="outline"
                         size="icon"
                         onClick={() => handleAddToWishlist(selectedBook)}
                         disabled={addToWishlistMutation.isPending}
-                        title="Add to Wishlist"
-                      >
+                        title="Add to Wishlist">
                         {addToWishlistMutation.isPending ? (
                           <Spinner className="h-4 w-4" />
                         ) : (
                           <Heart className={`h-5 w-5 ${wishlist.some(item => item.bookId === selectedBook._id) ? "fill-red-500 text-red-500" : ""}`} />
                         )}
                       </Button>
-
                       <Button
                         size="lg"
                         className="px-8"
@@ -294,8 +289,6 @@ const AllBooks = () => {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Order Modal */}
       <Dialog open={!!orderBook} onOpenChange={(open) => !open && setOrderBook(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -304,7 +297,6 @@ const AllBooks = () => {
               Complete your purchase for <span className="font-medium text-foreground">{orderBook?.title}</span>
             </DialogDescription>
           </DialogHeader>
-
           <div className="grid gap-5 py-4">
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -321,17 +313,14 @@ const AllBooks = () => {
                   </div>
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input
                   id="phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+880..."
-                />
+                  placeholder="+880..." />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="address">Delivery Address</Label>
                 <Textarea
@@ -339,17 +328,14 @@ const AllBooks = () => {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Street, City, Zip"
-                  className="resize-none min-h-20"
-                />
+                  className="resize-none min-h-20" />
               </div>
             </div>
-
             <div className="bg-muted/50 p-3 rounded-lg flex justify-between items-center text-sm">
               <span>Total to pay:</span>
               <span className="font-bold text-lg">${orderBook?.price}</span>
             </div>
           </div>
-
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="ghost" onClick={() => setOrderBook(null)}>
               Cancel
