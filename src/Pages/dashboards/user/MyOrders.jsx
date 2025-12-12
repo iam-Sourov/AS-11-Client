@@ -163,7 +163,6 @@ const MyOrders = () => {
                       {getStatusBadge(order.status)}
                     </TableCell>
                     <TableCell>
-                      {/* PAYMENT STATUS BADGE */}
                       <div className={`text-xs font-semibold px-2 py-1 rounded-full w-fit flex items-center gap-1 ${order.payment_status === 'paid'
                         ? "text-emerald-600 bg-emerald-50 border border-emerald-100"
                         : "text-amber-600 bg-amber-50 border border-amber-100"
@@ -174,12 +173,6 @@ const MyOrders = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        {/* Logic: 
-                                1. If Cancelled -> Hide all buttons
-                                2. If Pending -> Show Cancel
-                                3. If Pending AND Unpaid -> Show Pay Now 
-                            */}
-
                         {order.status !== 'cancelled' && (
                           <>
                             {order.status === 'pending' && order.payment_status !== 'paid' && (
@@ -187,8 +180,7 @@ const MyOrders = () => {
                                 size="sm"
                                 className="bg-primary hover:bg-primary/90 h-8"
                                 onClick={() => handlePayment(order)}
-                                disabled={isPaymentLoading === order._id}
-                              >
+                                disabled={isPaymentLoading === order._id}>
                                 {isPaymentLoading === order._id ? (
                                   <Loader2 className="w-3 h-3 animate-spin mr-1" />
                                 ) : (

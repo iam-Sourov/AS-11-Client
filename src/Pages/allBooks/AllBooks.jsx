@@ -171,7 +171,7 @@ const AllBooks = () => {
         setAddress('');
       }
     } catch (err) {
-      toast.error("Failed to place order.");
+      toast.error("Failed to place order.", err);
     } finally {
       setIsOrdering(false);
     }
