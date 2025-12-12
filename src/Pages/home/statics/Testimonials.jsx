@@ -34,16 +34,13 @@ const Testimonials = () => {
         <h2 className="text-3xl font-bold tracking-tight">Community Voices</h2>
         <p className="text-muted-foreground mt-2">What our 50,000+ happy readers are saying</p>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {testimonials.map((review, i) => (
           <Card key={i} className="relative bg-background border-none shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-12 px-8 pb-8">
-              {/* Quote Icon Decoration */}
               <div className="absolute top-6 left-8">
                 <Quote className="h-8 w-8 text-primary/10 fill-primary/10 rotate-180" />
               </div>
-
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -52,11 +49,9 @@ const Testimonials = () => {
                   />
                 ))}
               </div>
-
-              <p className="text-muted-foreground leading-relaxed mb-8 relative z-10">
+              <p className=" leading-relaxed mb-8 relative z-10">
                 "{review.text}"
               </p>
-
               <div className="flex items-center gap-4 border-t pt-6">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={review.img} />

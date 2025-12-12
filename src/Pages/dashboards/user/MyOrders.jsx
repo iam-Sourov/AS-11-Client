@@ -3,8 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import {
-  CreditCard,
-  Trash2,
   Package,
   Truck,
   CheckCircle,
@@ -42,7 +40,6 @@ const MyOrders = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
   const [cancelId, setCancelId] = useState(null);
-  const [payingId, setPayingId] = useState(null);
 
   const { data: orders = [], refetch, isLoading } = useQuery({
     queryKey: ["my-orders", user?.email],
@@ -52,29 +49,6 @@ const MyOrders = () => {
     },
     refetchInterval: 5000,
   });
-
-  const handlePayment = async (order) => {
-    setPayingId(order._id);
-    const orderInfo = {
-      _id: order._id,
-      email: order.email,
-      bookTitle: order.bookTitle,
-      image: order.image,
-      price: order.price,
-    };
-
-    try {
-      const res = await axiosSecure.post("/payment-checkout-session", orderInfo);
-      if (res.data.url) {
-        window.location.href = res.data.url;
-      }
-    } catch (error) {
-      console.error("Payment redirect failed", error);
-      toast.error("Failed to initiate payment");
-      setPayingId(null);
-    }
-  };
-
   const handleCancel = async () => {
     if (!cancelId) return;
 
@@ -126,25 +100,28 @@ const MyOrders = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="">SL</TableHead>
                 <TableHead className="w-[350px]">Product</TableHead>
                 <TableHead>Order Date</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Payment</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {orders.length > 0 ? (
-                orders.map((order) => (
+                orders.map((order, indx) => (
                   <TableRow key={order._id} className="group">
+                    <TableCell>
+                      {indx + 1}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-4">
                         <div className="h-12 w-9 rounded overflow-hidden bg-muted border">
                           <img
                             src={order.image}
                             alt={order.bookTitle}
-                            className="h-full w-full object-cover transition-transform group-hover:scale-105"/>
+                            className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                         </div>
                         <span className="font-medium text-foreground">{order.bookTitle}</span>
                       </div>
@@ -160,41 +137,10 @@ const MyOrders = () => {
                     </TableCell>
                     <TableCell>
                       <div className={`text-xs font-semibold px-2 py-1 rounded-full w-fit ${order.payment_status === 'paid'
-                          ? "text-emerald-600 bg-emerald-50"
-                          : "text-amber-600 bg-amber-50"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-amber-600 bg-amber-50"
                         }`}>
                         {order.payment_status === 'paid' ? "PAID" : "UNPAID"}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        {order.status === "pending" && order.payment_status !== "paid" && (
-                          <>
-                            <Button
-                              size="sm"
-                              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-                              onClick={() => handlePayment(order)}
-                              disabled={payingId === order._id}>
-                              {payingId === order._id ? (
-                                <span className="animate-pulse">Processing...</span>
-                              ) : (
-                                <>
-                                  <CreditCard className="w-3.5 h-3.5 mr-2" /> Pay
-                                </>
-                              )}
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-red-600 hover:bg-red-50 hover:text-red-700 border-red-100"
-                              onClick={() => setCancelId(order._id)}>
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
-                          </>
-                        )}
-                        {(order.payment_status === 'paid' || order.status !== 'pending') && (
-                          <span className="text-xs text-muted-foreground italic">No actions</span>
-                        )}
                       </div>
                     </TableCell>
                   </TableRow>

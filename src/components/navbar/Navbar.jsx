@@ -2,11 +2,6 @@ import React, { useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import {
-    Menubar,
-    MenubarMenu,
-    MenubarTrigger,
-} from "@/components/ui/menubar";
-import {
     Sheet,
     SheetContent,
     SheetHeader,
@@ -25,10 +20,10 @@ import { BookOpen, Menu } from 'lucide-react';
 
 const Navbar = () => {
     const { user, LogOut } = useContext(AuthContext);
-    console.log(user)
     const [isOpen, setIsOpen] = useState(false);
+
     const getLinkClass = ({ isActive }) =>
-        `cursor-pointer hover:text-primary transition ${isActive ? "text-blue-500 font-bold" : "text-sm font-medium"
+        `text-sm font-medium transition-colors hover:text-primary ${isActive ? "text-primary font-bold" : "text-muted-foreground"
         }`;
 
     const handleSignOut = () => {
@@ -39,115 +34,107 @@ const Navbar = () => {
             })
             .catch((err) => toast.error(err.message));
     };
+
     return (
-        <nav className=" w-full flex justify-between items-center backdrop-blur-md border-b p-3 sticky top-0 z-50 bg-background/80">
-            <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-                <BookOpen className="h-6 w-6 text-primary" />
-                BookLibrary
-            </Link>
-            <div className="hidden md:flex justify-center items-center">
-                <Menubar className="border-2 rounded-xl flex justify-center items-center space-x-6 font-medium ">
-                    <MenubarMenu>
-                        <MenubarTrigger asChild className="cursor-pointer">
-                            <NavLink to="/" className={getLinkClass}>Home</NavLink>
-                        </MenubarTrigger>
-                    </MenubarMenu>
-
-                    <MenubarMenu>
-                        <MenubarTrigger asChild className="cursor-pointer">
-                            <NavLink to="/all-books" className={getLinkClass}>All-Books</NavLink>
-                        </MenubarTrigger>
-                    </MenubarMenu>
-
+        <nav className="fixed top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/60">
+            <div className="container mx-auto flex h-16 items-center justify-between px-4">
+                <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
+                    <BookOpen className="h-6 w-6 text-primary" />
+                    <span>BookLibrary</span>
+                </Link>
+                <div className="hidden md:flex items-center gap-8">
+                    <NavLink to="/" className={getLinkClass}>
+                        Home
+                    </NavLink>
+                    <NavLink to="/all-books" className={getLinkClass}>
+                        All Books
+                    </NavLink>
                     {user && (
-                        <MenubarMenu>
-                            <MenubarTrigger asChild className="cursor-pointer">
-                                <NavLink to="/dashboard" className={getLinkClass}>Dashboard</NavLink>
-                            </MenubarTrigger>
-                        </MenubarMenu>
+                        <NavLink to="/dashboard" className={getLinkClass}>
+                            Dashboard
+                        </NavLink>
                     )}
-
                     {!user && (
-                        <>
-                            <MenubarMenu>
-                                <MenubarTrigger asChild className="cursor-pointer">
-                                    <NavLink to="/login" className={getLinkClass}>Login</NavLink>
-                                </MenubarTrigger>
-                            </MenubarMenu>
-                            <MenubarMenu>
-                                <MenubarTrigger asChild className="cursor-pointer">
-                                    <NavLink to="/register" className={getLinkClass}>Register</NavLink>
-                                </MenubarTrigger>
-                            </MenubarMenu>
-                        </>
+                        <div className="flex items-center gap-4">
+                            <NavLink to="/login" className={getLinkClass}>
+                                Login
+                            </NavLink>
+                            <NavLink to="/register" className={getLinkClass}>
+                                Register
+                            </NavLink>
+                        </div>
                     )}
-                </Menubar>
-            </div>
-            <div className="flex items-center gap-3">
-                <AnimatedThemeToggler />
-                {user && (
-                    <div className="flex items-center gap-3">
-                        <Link to={'/dashboard/my-profile'}>
-                            <Avatar className="cursor-pointer border-2 border-primary/10 hover:border-primary transition">
-                                <AvatarImage src={user.photoURL} alt={user.displayName || "User"} />
-                                <AvatarFallback className="font-bold bg-muted">
-                                    {user?.email?.charAt(0).toUpperCase() || "U"}
-                                </AvatarFallback>
-                            </Avatar>
-                        </Link>
-                        <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={handleSignOut}
-                            className="hidden md:flex">
-                            Logout
-                        </Button>
-                    </div>
-                )}
-                <div className="md:hidden flex items-center">
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                        <SheetTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <Menu className="h-[1.2rem] w-[1.2rem]" />
+                </div>
+                <div className="flex items-center gap-4">
+                    <AnimatedThemeToggler />
+                    {user && (
+                        <div className="hidden md:flex items-center gap-3">
+                            <Link to={'/dashboard/my-profile'}>
+                                <Avatar className="cursor-pointer border-2 border-primary/10 hover:border-primary transition h-9 w-9">
+                                    <AvatarImage src={user.photoURL} alt={user.displayName || "User"} />
+                                    <AvatarFallback className="font-bold bg-muted">
+                                        {user?.email?.charAt(0).toUpperCase() || "U"}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </Link>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={handleSignOut}
+                                className="h-9">
+                                Logout
                             </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="overflow-y-auto">
-                            <SheetHeader>
-                                <SheetTitle className="text-left">Menu</SheetTitle>
-                            </SheetHeader>
-                            <div className="flex flex-col gap-6 mt-8">
-                                <NavLink to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium">
-                                    Home
-                                </NavLink>
-                                <NavLink to="/all-books" onClick={() => setIsOpen(false)} className="text-lg font-medium">
-                                    AllBooks
-                                </NavLink>
-                                {user && (
-                                    <NavLink to="/dashboard" onClick={() => setIsOpen(false)} className="text-lg font-medium">
-                                        Dashboard
+                        </div>
+                    )}
+                    <div className="md:hidden flex items-center">
+                        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                            <SheetTrigger asChild>
+                                <Button variant="outline" size="icon">
+                                    <Menu className="h-[1.2rem] w-[1.2rem]" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="overflow-y-auto">
+                                <SheetHeader>
+                                    <SheetTitle className="text-left flex items-center gap-2">
+                                        <BookOpen className="h-5 w-5 text-primary" /> BookLibrary
+                                    </SheetTitle>
+                                </SheetHeader>
+                                <div className="flex flex-col gap-6 mt-8">
+                                    <NavLink to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
+                                        Home
                                     </NavLink>
-                                )}
-                                {!user && (
-                                    <>
-                                        <NavLink to="/login" onClick={() => setIsOpen(false)} className="text-lg font-medium">
-                                            Login
+                                    <NavLink to="/all-books" onClick={() => setIsOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
+                                        All Books
+                                    </NavLink>
+                                    {user && (
+                                        <NavLink to="/dashboard" onClick={() => setIsOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
+                                            Dashboard
                                         </NavLink>
-                                        <NavLink to="/register" onClick={() => setIsOpen(false)} className="text-lg font-medium">
-                                            Register
-                                        </NavLink>
-                                    </>
-                                )}
-                                {user && (
-                                    <Button
-                                        variant="destructive"
-                                        onClick={handleSignOut}
-                                        className="w-full flex items-center gap-2">
-                                        Logout
-                                    </Button>
-                                )}
-                            </div>
-                        </SheetContent>
-                    </Sheet>
+                                    )}
+
+                                    {!user && (
+                                        <>
+                                            <NavLink to="/login" onClick={() => setIsOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
+                                                Login
+                                            </NavLink>
+                                            <NavLink to="/register" onClick={() => setIsOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
+                                                Register
+                                            </NavLink>
+                                        </>
+                                    )}
+                                    {user && (
+                                        <Button
+                                            variant="destructive"
+                                            onClick={handleSignOut}
+                                            className="w-full flex items-center gap-2 mt-4">
+                                            Logout
+                                        </Button>
+                                    )}
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
             </div>
         </nav>

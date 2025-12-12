@@ -8,12 +8,12 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 const BookCard = ({ book }) => (
   <Link
     to="/all-books"
-    className="group relative flex w-[280px] flex-col overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md hover:border-primary/50">
-    <div className="md:aspect-4/5 w-full overflow-hidden bg-muted">
+    className="group relative flex w-[280px] h-[380px] flex-col overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md hover:border-primary/50">
+    <div className="h-80 w-full md:aspect-4/5 overflow-hidden bg-muted">
       <img
         src={book.image}
         alt={book.title}
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
     </div>
     <div className="flex flex-1 flex-col p-4">
       <h3 className="line-clamp-1 text-base font-medium tracking-tight">

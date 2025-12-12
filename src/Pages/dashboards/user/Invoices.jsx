@@ -45,6 +45,7 @@ const Invoices = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="">SL</TableHead>
                 <TableHead className="w-[180px]">Transaction ID</TableHead>
                 <TableHead>Item Details</TableHead>
                 <TableHead>Date</TableHead>
@@ -54,8 +55,11 @@ const Invoices = () => {
             </TableHeader>
             <TableBody>
               {invoices.length > 0 ? (
-                invoices.map((invoice) => (
+                invoices.map((invoice, indx) => (
                   <TableRow key={invoice._id} className="group cursor-default">
+                    <TableCell className="font-mono text-xs text-muted-foreground">
+                      {indx + 1}
+                    </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <FileText className="h-3 w-3" />

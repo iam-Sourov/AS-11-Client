@@ -64,27 +64,31 @@ const MyWishlist = () => {
         </div>
       </div>
       <Card className="border shadow-sm overflow-hidden">
-        <CardContent className="p-0">
+        <CardContent className="">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead>SL</TableHead>
                 <TableHead className="w-[400px]">Product Details</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className='text-right'>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {wishlist.length > 0 ? (
-                wishlist.map((item) => (
+                wishlist.map((item, indx) => (
                   <TableRow key={item._id} className="group">
+                    <TableCell>
+                      {indx + 1}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-4">
                         <div className="h-16 w-12 rounded-sm overflow-hidden bg-muted border shrink-0">
                           <img
                             src={item.image}
                             alt={item.title}
-                            className="h-full w-full object-cover transition-transform group-hover:scale-105"/>
+                            className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                         </div>
                         <div className="space-y-1">
                           <span className="font-semibold text-foreground line-clamp-1">{item.title}</span>
@@ -93,7 +97,7 @@ const MyWishlist = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="font-normal text-muted-foreground bg-muted/50">
+                      <Badge variant="primary" className="font-normal text-muted-foreground bg-muted/50">
                         {item.category || "General"}
                       </Badge>
                     </TableCell>
@@ -116,7 +120,7 @@ const MyWishlist = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-96 text-center">
+                  <TableCell colSpan={4} className="h-96 w-full border text-center">
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto space-y-4">
                       <div className="p-4 rounded-full bg-muted/50">
                         <PackageOpen className="h-12 w-12 text-muted-foreground/50" />
