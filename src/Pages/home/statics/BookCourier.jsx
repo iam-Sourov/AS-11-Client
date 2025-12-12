@@ -38,11 +38,11 @@ const BookCourier = () => {
   return (
     <section className="w-full py-20 px-6 bg-background">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16 max-w-2xl mx-auto">
+        <div className="text-center  max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
             Why Readers Trust Us
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-lg mb-2">
             We don't just sell books; we deliver stories with care, speed, and affordability.
           </p>
         </div>

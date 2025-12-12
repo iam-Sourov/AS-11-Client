@@ -47,16 +47,16 @@ const LatestBooks = () => {
           </div>
           <Button asChild variant="ghost" className="group hidden md:flex">
             <Link to="/all-books">
-              View all books 
+              View all books
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </Button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
           {publishedBooks.map((book) => (
-            <BookCard 
-              key={book._id} 
-              book={book} 
+            <BookCard
+              key={book._id}
+              book={book}
               onView={() => setSelectedBook(book)} />
           ))}
         </div>
@@ -70,10 +70,10 @@ const LatestBooks = () => {
             {selectedBook && (
               <div className="grid md:grid-cols-5 h-full max-h-[90vh] md:max-h-[600px] overflow-y-auto md:overflow-hidden">
                 <div className="md:col-span-2 bg-muted relative h-64 md:h-full">
-                  <img 
-                    src={selectedBook.image} 
-                    alt={selectedBook.title} 
-                    className="absolute inset-0 w-full h-full object-cover"/>
+                  <img
+                    src={selectedBook.image}
+                    alt={selectedBook.title}
+                    className="absolute inset-0 w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent md:hidden" />
                 </div>
                 <div className="md:col-span-3 p-6 md:p-8 flex flex-col h-full bg-background">
@@ -106,14 +106,14 @@ const LatestBooks = () => {
                       <span className="text-3xl font-bold text-primary">${selectedBook.price}</span>
                     </div>
                     <div className="flex gap-3">
-                       <Button variant="outline" onClick={() => setSelectedBook(null)}>
-                         Close
-                       </Button>
-                       <Button className="" asChild>
-                         <Link to={'/all-books'}>
-                           See all books
-                         </Link>
-                       </Button>
+                      <Button variant="outline" onClick={() => setSelectedBook(null)}>
+                        Close
+                      </Button>
+                      <Button className="" asChild>
+                        <Link to={'/all-books'}>
+                          See all books
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ const BookCard = ({ book, onView }) => (
       <img
         src={book.image}
         alt={book.title}
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
       <div className="absolute top-2 right-2 -translate-y-2.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
         <Badge variant="secondary" className="flex items-center gap-1 bg-white/90 backdrop-blur-sm shadow-sm">
           <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
@@ -140,7 +140,7 @@ const BookCard = ({ book, onView }) => (
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
         <Button size="sm" className="w-full shadow-lg">
-           Quick View
+          Quick View
         </Button>
       </div>
     </div>

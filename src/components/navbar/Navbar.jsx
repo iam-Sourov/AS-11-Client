@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AuthContext } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
-import { Menu } from 'lucide-react';
+import { BookOpen, Menu } from 'lucide-react';
 
 const Navbar = () => {
     const { user, LogOut } = useContext(AuthContext);
@@ -41,8 +41,9 @@ const Navbar = () => {
     };
     return (
         <nav className=" w-full flex justify-between items-center backdrop-blur-md border-b p-3 sticky top-0 z-50 bg-background/80">
-            <Link to="/" className="text-xl font-bold flex items-center gap-2">
-                BookLibrary 
+            <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
+                <BookOpen className="h-6 w-6 text-primary" />
+                BookLibrary
             </Link>
             <div className="hidden md:flex justify-center items-center">
                 <Menubar className="border-2 rounded-xl flex justify-center items-center space-x-6 font-medium ">

@@ -1,6 +1,20 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+
+import L from 'leaflet';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
 const Map = () => {
   const cities = [
     { name: "Dhaka", pos: [23.8103, 90.4125] },
@@ -38,13 +52,14 @@ const Map = () => {
     { name: "Mymensingh", pos: [24.7471, 90.4203] },
     { name: "Jamalpur", pos: [24.9375, 89.9378] },
   ];
+
   return (
     <section className="w-full p-6 rounded-2xl shadow-md mt-10">
       <h2 className="text-3xl font-bold mb-6 text-center">Our Delivery Coverage</h2>
       <div className="w-full h-[400px] rounded-2xl overflow-hidden shadow-lg">
         <MapContainer center={[23.8103, 90.4125]} zoom={7} className="w-full h-full">
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {cities.map((city, i) => (
             <Marker key={i} position={city.pos}>
               <Popup>{city.name}</Popup>

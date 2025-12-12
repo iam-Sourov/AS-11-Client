@@ -8,6 +8,8 @@ import Stats from './statics/Stats';
 import NewsLetter from './statics/NewsLetter';
 import Slider from './slider/Slider';
 import Container from '../../shared/container';
+import Categories from './statics/Categories';
+import Testimonials from './statics/Testimonials';
 
 const Home = () => {
   return (
@@ -37,22 +39,22 @@ const Home = () => {
       </section>
       <div className="border-y bg-muted/20">
         <Container>
-           <Stats />
+          <Stats></Stats>
         </Container>
       </div>
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-12">
         <Container>
           <LatestBooks />
         </Container>
       </section>
-      <section className="bg-muted/30 py-20 md:py-32">
+      <section className="bg-muted/30 py-12 md:py-12">
         <Container>
           <BookCourier />
         </Container>
       </section>
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-19">
         <Container>
-          <div className="space-y-4 text-center max-w-3xl mx-auto mb-16">
+          <div className="space-y-4 text-center max-w-3xl p-3 mx-auto mb-16">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Nationwide Delivery</h2>
             <p className="text-lg text-muted-foreground">
               We deliver to every corner of the country. Check our coverage map below
@@ -62,9 +64,19 @@ const Home = () => {
           <Map />
         </Container>
       </section>
-      <section className="pb-16 md:pb-24">
+      <section className="pb-12 md:pb-19">
         <Container>
           <NewsLetter />
+        </Container>
+      </section>
+      <section className="pb-12 md:pb-19">
+        <Container>
+          <Categories></Categories>
+        </Container>
+      </section>
+      <section className="pb-12 md:pb-19">
+        <Container>
+          <Testimonials></Testimonials>
         </Container>
       </section>
     </div>
