@@ -18,6 +18,7 @@ import Invoices from "../Pages/dashboards/user/Invoices";
 import PaymentSuccess from "../Pages/dashboards/payment/PaymentSuccess";
 import PaymentCancel from "../Pages/dashboards/payment/PaymentCancel";
 import MyWishlist from "../Pages/dashboards/user/MyWishlist";
+import BookDetails from "../Pages/home/bookDetails/BookDetails";
 
 
 const router = createBrowserRouter([
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
             {
                 path: "register",
                 element: <Register></Register>
+            },
+            {
+                path: "book/:id",
+                element: <BookDetails></BookDetails>
             },
             {
                 path: "all-books",

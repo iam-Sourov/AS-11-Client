@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  MoreHorizontal,
   ShieldCheck,
   BookOpen,
   User,
@@ -17,14 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +33,7 @@ const ManageUsers = () => {
       return res.data;
     },
   });
+  console.log(users)
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ id, role }) => {
@@ -60,7 +52,6 @@ const ManageUsers = () => {
     updateRoleMutation.mutate({ id, role });
   };
 
-  // Helper to render role badge
   const getRoleBadge = (role) => {
     switch (role) {
       case "admin":
@@ -71,7 +62,7 @@ const ManageUsers = () => {
         );
       case "librarian":
         return (
-          <Badge variant="secondary" className="gap-1 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300">
+          <Badge variant="secondary" className=" gap-1 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300">
             <BookOpen className="h-3 w-3" /> Librarian
           </Badge>
         );
@@ -88,7 +79,6 @@ const ManageUsers = () => {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
@@ -97,13 +87,13 @@ const ManageUsers = () => {
           </p>
         </div>
       </div>
-
-      {/* Table Container */}
       <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="w-[300px]">User</TableHead>
+              <TableHead className="">User</TableHead>
+              <TableHead className="">Name</TableHead>
+              <TableHead className="">Email</TableHead>
               <TableHead>Current Role</TableHead>
               <TableHead>Account Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -112,68 +102,56 @@ const ManageUsers = () => {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user._id} className="group">
-                {/* User Column */}
                 <TableCell>
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-10 w-10 border">
-                      <AvatarImage src={user.photoURL} alt={user.name} />
-                      <AvatarFallback className="uppercase">
-                        {user.name?.slice(0, 2) || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <span className="font-medium leading-none">{user.name}</span>
-                      <span className="text-xs text-muted-foreground mt-1">
-                        {user.email}
-                      </span>
-                    </div>
+                  <Avatar className="h-10 w-10 border">
+                    <AvatarImage src={user.photoURL} alt={user.name} />
+                    <AvatarFallback className="uppercase">
+                      {user.name?.slice(0, 2) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </TableCell>
+                <TableCell>
+                  <div className="font-semibold leading-none">{user.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-xs text-muted-foreground">
+                    {user.email}
                   </div>
                 </TableCell>
-
-                {/* Role Column */}
                 <TableCell>
                   {getRoleBadge(user.role)}
                 </TableCell>
-
-                {/* Status Column (Placeholder based on context) */}
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-500" />
                     <span className="text-sm text-muted-foreground">Active</span>
                   </div>
                 </TableCell>
-
-                {/* Actions Column */}
                 <TableCell className="text-right">
                   {user.role === "admin" ? (
                     <span className="text-xs text-muted-foreground italic pr-3">
-                      Restricted
+                      Already Admin
                     </span>
                   ) : (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
+                    <div className="flex justify-end gap-2">
+                      {user.role !== "librarian" && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200"
+                          onClick={() => handleRoleUpdate(user._id, "librarian")}>
+                          <BookOpen className="mr-1 h-3.5 w-3.5" />
+                          Librarian
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Change Role</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {user.role !== "librarian" && (
-                          <DropdownMenuItem onClick={() => handleRoleUpdate(user._id, "librarian")}>
-                            <BookOpen className="mr-2 h-4 w-4" />
-                            Make Librarian
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem
-                          onClick={() => handleRoleUpdate(user._id, "admin")}
-                          className="text-violet-600 focus:text-violet-700">
-                          <ShieldAlert className="mr-2 h-4 w-4" />
-                          Promote to Admin
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      )}
+                      <Button
+                        size="sm"
+                        className="bg-violet-600 hover:bg-violet-700 text-white"
+                        onClick={() => handleRoleUpdate(user._id, "admin")}>
+                        <ShieldAlert className="mr-1 h-3.5 w-3.5" />
+                        Admin
+                      </Button>
+                    </div>
                   )}
                 </TableCell>
               </TableRow>

@@ -133,9 +133,9 @@ const BookCard = ({ book, onView }) => (
         alt={book.title}
         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
       <div className="absolute top-2 right-2 -translate-y-2.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-        <Badge variant="secondary" className="flex items-center gap-1 backdrop-blur-sm shadow-sm">
+        <Badge variant="secondary" className="flex items-center bg-amber-400/10 gap-1 backdrop-blur-sm shadow-sm">
           <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-          <span className="text-xs font-semibold text-foreground">{book.rating}</span>
+          <span className="text-xs font-semibold text-black">{book.rating}</span>
         </Badge>
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full transition-transform duration-300 group-hover:translate-y-0">

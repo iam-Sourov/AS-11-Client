@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Trash2, MoreHorizontal, AlertCircle, PackageOpen } from "lucide-react";
+import { Trash2, PackageOpen } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -24,13 +24,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
@@ -52,7 +45,6 @@ const ManageBooks = () => {
 
   const handleDelete = async () => {
     if (!deleteId) return;
-
     try {
       await axiosSecure.delete(`/books/${deleteId}`);
       toast.success("Book deleted successfully", {
@@ -72,6 +64,7 @@ const ManageBooks = () => {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Inventory</h2>
@@ -84,7 +77,9 @@ const ManageBooks = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="w-[400px]">Book Details</TableHead>
+              <TableHead className="">Cover</TableHead>
+              <TableHead className="">Title</TableHead>
+              <TableHead className="">Author</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Price</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -104,22 +99,22 @@ const ManageBooks = () => {
               books.map((book) => (
                 <TableRow key={book._id} className="group">
                   <TableCell>
-                    <div className="flex items-center gap-4">
-                      <div className="h-14 w-10 overflow-hidden rounded-md border bg-muted">
-                        <img
-                          src={book.image}
-                          alt={book.title}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"/>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium leading-none truncate max-w-[200px]">
-                          {book.title}
-                        </span>
-                        <span className="text-sm text-muted-foreground mt-1">
+                    <div className="h-14 w-10 overflow-hidden rounded-md border bg-muted">
+                      <img
+                        src={book.image}
+                        alt={book.title}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-semibold">
+                      {book.title}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="font-semibold text-sm">
                           {book.author}
                         </span>
-                      </div>
-                    </div>
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary" className="font-normal">
@@ -130,23 +125,13 @@ const ManageBooks = () => {
                     ${book.price}
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive cursor-pointer"
-                          onClick={() => setDeleteId(book._id)}>
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Book
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setDeleteId(book._id)}
+                      className="bg-red-600/20 text-red-600 hover:bg-red-20 shadow-none">
+                      <Trash2 className=" h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -179,6 +164,7 @@ const ManageBooks = () => {
     </div>
   );
 };
+
 const TableSkeleton = () => (
   <div className="p-8 max-w-7xl mx-auto space-y-6">
     <div className="h-8 w-48 bg-muted rounded animate-pulse" />

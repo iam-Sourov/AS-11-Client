@@ -54,12 +54,12 @@ const Orders = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  const [cancelId, setCancelId] = useState(null); // Track which order to cancel
+  const [cancelId, setCancelId] = useState(null)
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading,refetch } = useQuery({
     queryKey: ['librarian-orders', user?.displayName],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/librarian-orders/${user.displayName}`);
+      const res = await axiosSecure.get(`/orders/${user.displayName}`);
       return res.data;
     }
   });
@@ -74,19 +74,22 @@ const Orders = () => {
       toast.error("Failed to update status");
     }
   };
+
   const handleCancel = async () => {
     if (!cancelId) return;
     try {
       await axiosSecure.patch(`/orders/cancel/${cancelId}`);
-      toast.success("Order cancelled successfully");
-      queryClient.invalidateQueries(['librarian-orders']);
-    } catch (error) {
-      console.error("Cancel failed:", error);
+      toast.success("Order Cancelled");
+      refetch();
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to cancel order");
     } finally {
       setCancelId(null);
     }
   };
+
+
   const getStatusConfig = (status) => {
     switch (status) {
       case 'pending': return { icon: Clock, color: 'text-amber-600 bg-amber-100 border-amber-200' };
@@ -98,12 +101,13 @@ const Orders = () => {
   };
 
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading orders...</div>;
+
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Order Management</h2>
-          <p className="text-muted-foreground">Track and manage customer orders.</p>
+          <p className="text-muted-foreground">Track and manage customer orders for your books.</p>
         </div>
       </div>
       <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
@@ -113,7 +117,7 @@ const Orders = () => {
               <TableHead className="w-[300px]">Product</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Payment</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Status Flow</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -121,6 +125,10 @@ const Orders = () => {
             {orders.length > 0 ? (
               orders.map((order) => {
                 const { icon: StatusIcon, color } = getStatusConfig(order.status);
+
+                // Logic to lock dropdown if Cancelled or Delivered (Final States)
+                const isFinalState = order.status === 'cancelled' || order.status === 'delivered';
+
                 return (
                   <TableRow key={order._id} className="group">
                     <TableCell>
@@ -167,26 +175,50 @@ const Orders = () => {
                         </Badge>
                       </div>
                     </TableCell>
+
+                    {/* --- UPDATED STATUS SELECT LOGIC --- */}
                     <TableCell>
                       <Select
                         defaultValue={order.status}
                         onValueChange={(val) => handleStatusChange(order._id, val)}
-                        disabled={order.status === 'cancelled'}>
-                        <SelectTrigger className={`w-[140px] h-9 border-0 ring-0 focus:ring-0 shadow-none px-2.5 ${color}`}>
+                        disabled={isFinalState}
+                      >
+                        <SelectTrigger className={`w-[140px] h-9 border-0 ring-0 focus:ring-0 shadow-none px-2.5 ${color} ${isFinalState ? 'opacity-70 cursor-not-allowed' : ''}`}>
                           <div className="flex items-center gap-2">
                             <StatusIcon className="h-3.5 w-3.5" />
                             <SelectValue />
                           </div>
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="shipped">Shipped</SelectItem>
-                          <SelectItem value="delivered">Delivered</SelectItem>
+                          {/* Pending Option: Disabled if we moved past it */}
+                          <SelectItem
+                            value="pending"
+                            disabled={order.status === 'shipped' || order.status === 'delivered'}
+                          >
+                            Pending
+                          </SelectItem>
+
+                          {/* Shipped Option: Disabled if delivered (can't go back) */}
+                          <SelectItem
+                            value="shipped"
+                            disabled={order.status === 'delivered'}
+                          >
+                            Shipped
+                          </SelectItem>
+
+                          {/* Delivered Option: Disabled if still Pending (Must ship first) */}
+                          <SelectItem
+                            value="delivered"
+                            disabled={order.status === 'pending'}
+                          >
+                            Delivered
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
+
                     <TableCell className="text-right">
-                      {order.status !== 'cancelled' && order.status !== 'delivered' ? (
+                      {order.status !== 'cancelled' && order.status === 'pending' ? (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -196,9 +228,7 @@ const Orders = () => {
                           <Ban className="h-4 w-4" />
                         </Button>
                       ) : (
-                        <Button variant="ghost" size="icon" disabled className="h-8 w-8 opacity-20">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
+                        <div className="h-8 w-8" />
                       )}
                     </TableCell>
                   </TableRow>
@@ -217,12 +247,14 @@ const Orders = () => {
           </TableBody>
         </Table>
       </div>
+
+      {/* Cancel Confirmation Dialog */}
       <AlertDialog open={!!cancelId} onOpenChange={(open) => !open && setCancelId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Order?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this order? This action cannot be undone and the customer will be notified.
+              Are you sure you want to cancel this order? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

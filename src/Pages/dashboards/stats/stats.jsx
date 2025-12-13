@@ -1,171 +1,207 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Legend
-} from "recharts";
-import { Users, BookOpen, ShoppingCart, Activity } from "lucide-react";
-import useAxiosSecure from "@/hooks/useAxiosSecure";
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { 
+    Users, 
+    BookOpen, 
+    ShoppingBag, 
+    ShieldCheck, 
+    UserCog, 
+    User,
+    Clock,
+    XCircle,
+    CheckCircle2
+} from 'lucide-react';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
-
-const COLORS = {
-  primary: "#3b82f6",   
-  secondary: "#10b981", 
-  accent: "#f59e0b",   
-  muted: "#ef4444",    
-  slate: "#64748b"      
-};
-
-const PIE_COLORS = [COLORS.primary, COLORS.secondary, COLORS.accent];
 
 const Stats = () => {
-  const axiosSecure = useAxiosSecure();
+    const axiosSecure = useAxiosSecure();
 
-  const { data: stats = {}, isLoading } = useQuery({
-    queryKey: ["admin-stats"],
-    queryFn: async () => {
-      const res = await axiosSecure.get("stats");
-      return res.data;
-    },
-  });
-  console.log(stats);
+    const { data: stats, isLoading } = useQuery({
+        queryKey: ['admin-stats'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/stats');
+            return res.data;
+        }
+    });
 
-  if (isLoading) return <StatsSkeleton />;
+    if (isLoading) return <DashboardSkeleton />;
 
-  const userRoleData = [
-    { name: "Admins", value: stats.admins || 0 },
-    { name: "Librarians", value: stats.librarians || 0 },
-    { name: "Users", value: stats.users || 0 },
-  ];
+    // Calculate percentages for progress bars
+    const getPercent = (value, total) => total > 0 ? (value / total) * 100 : 0;
 
-  const orderData = [
-    { name: "Pending", value: stats.pendingOrders, fill: COLORS.accent },
-    { name: "Completed", value: stats.completedOrders, fill: COLORS.secondary },
-    { name: "Cancelled", value: stats.cancelledOrders, fill: COLORS.muted },
-  ];
+    return (
+        <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+            
+            {/* Header */}
+            <div>
+                <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
+                <p className="text-muted-foreground mt-1">
+                    Welcome back. Here's what's happening in your library today.
+                </p>
+            </div>
 
-  return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+            {/* --- TOP SUMMARY CARDS --- */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* Total Books */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Books</CardTitle>
+                        <BookOpen className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.books}</div>
+                        <p className="text-xs text-muted-foreground">Available in library</p>
+                    </CardContent>
+                </Card>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard
-          title="Total Users"
-          value={stats.users + stats.admins + stats.librarians}
-          icon={Users}
-          description="Active accounts" />
-        <KpiCard
-          title="Library Inventory"
-          value={stats.books}
-          icon={BookOpen}
-          description="Books available" />
-        <KpiCard
-          title="Total Orders"
-          value={stats.pendingOrders + stats.completedOrders + stats.cancelledOrders}
-          icon={ShoppingCart}
-          description="All time transactions" />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="flex flex-col border-none shadow-sm bg-card">
-          <CardHeader className="pb-0">
-            <CardTitle>User Distribution</CardTitle>
-            <CardDescription>Breakdown of platform roles</CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1 min-h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={userRoleData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={5}
-                  dataKey="value"
-                  stroke="none">
-                  {userRoleData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  itemStyle={{ color: '#000' }} />
-                <Legend verticalAlign="bottom" height={36} iconType="circle" />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        <Card className="flex flex-col border-none shadow-sm bg-card">
-          <CardHeader className="pb-0">
-            <CardTitle>Order Performance</CardTitle>
-            <CardDescription>Status of current transactions</CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1 min-h-[300px] pt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={orderData} layout="vertical" margin={{ left: 0, right: 30 }}>
-                <XAxis type="number" hide />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  tickLine={false}
-                  axisLine={false}
-                  width={80}
-                  tick={{ fontSize: 12, fill: '#64748b' }} />
-                <Tooltip
-                  cursor={{ fill: 'transparent' }}
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                <Bar
-                  dataKey="value"
-                  barSize={32}
-                  radius={[0, 4, 4, 0]}
-                  background={{ fill: '#f1f5f9' }}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+                {/* Total Users */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                        <p className="text-xs text-muted-foreground">Registered accounts</p>
+                    </CardContent>
+                </Card>
 
-      </div>
-    </div>
-  );
+                {/* Total Orders */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                        <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.totalOrders}</div>
+                        <p className="text-xs text-muted-foreground">Lifetime orders placed</p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* --- DETAILED BREAKDOWN --- */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {/* USER DEMOGRAPHICS CARD */}
+                <Card className="col-span-1">
+                    <CardHeader>
+                        <CardTitle>User Distribution</CardTitle>
+                        <CardDescription>Breakdown of roles across the platform.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        
+                        {/* Users */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-blue-500" />
+                                    <span className="font-medium">Standard Users</span>
+                                </div>
+                                <span className="text-muted-foreground">{stats.users}</span>
+                            </div>
+                            <Progress value={getPercent(stats.users, stats.totalUsers)} className="h-2 [&>*]:bg-blue-500" />
+                        </div>
+
+                        {/* Librarians */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <UserCog className="h-4 w-4 text-orange-500" />
+                                    <span className="font-medium">Librarians</span>
+                                </div>
+                                <span className="text-muted-foreground">{stats.librarians}</span>
+                            </div>
+                            <Progress value={getPercent(stats.librarians, stats.totalUsers)} className="h-2 [&>*]:bg-orange-500" />
+                        </div>
+
+                        {/* Admins */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <ShieldCheck className="h-4 w-4 text-violet-500" />
+                                    <span className="font-medium">Admins</span>
+                                </div>
+                                <span className="text-muted-foreground">{stats.admins}</span>
+                            </div>
+                            <Progress value={getPercent(stats.admins, stats.totalUsers)} className="h-2 [&>*]:bg-violet-500" />
+                        </div>
+
+                    </CardContent>
+                </Card>
+
+                {/* ORDER STATUS CARD */}
+                <Card className="col-span-1">
+                    <CardHeader>
+                        <CardTitle>Order Statistics</CardTitle>
+                        <CardDescription>Current status of all transactions.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+
+                        {/* Completed */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                    <span className="font-medium">Completed</span>
+                                </div>
+                                <span className="text-muted-foreground">{stats.completedOrders}</span>
+                            </div>
+                            <Progress value={getPercent(stats.completedOrders, stats.totalOrders)} className="h-2 [&>*]:bg-emerald-500" />
+                        </div>
+
+                        {/* Pending */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4 text-amber-500" />
+                                    <span className="font-medium">Pending</span>
+                                </div>
+                                <span className="text-muted-foreground">{stats.pendingOrders}</span>
+                            </div>
+                            <Progress value={getPercent(stats.pendingOrders, stats.totalOrders)} className="h-2 [&>*]:bg-amber-500" />
+                        </div>
+
+                        {/* Cancelled */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <XCircle className="h-4 w-4 text-red-500" />
+                                    <span className="font-medium">Cancelled</span>
+                                </div>
+                                <span className="text-muted-foreground">{stats.cancelledOrders}</span>
+                            </div>
+                            <Progress value={getPercent(stats.cancelledOrders, stats.totalOrders)} className="h-2 [&>*]:bg-red-500" />
+                        </div>
+
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
 };
 
-const KpiCard = ({ title, value, icon: Icon, description }) => (
-  <Card className="border-none shadow-sm bg-card">
-    <CardContent className="p-6 flex items-center justify-between space-y-0">
-      <div className="space-y-1">
-        <p className="text-sm font-medium text-muted-foreground">{title}</p>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-      <div className="p-3 bg-primary/10 rounded-full text-primary">
-        <Icon className="h-5 w-5" />
-      </div>
-    </CardContent>
-  </Card>
-);
-
-const StatsSkeleton = () => (
-  <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {[1, 2, 3, 4].map((i) => (
-        <Skeleton key={i} className="h-32 rounded-xl" />
-      ))}
+const DashboardSkeleton = () => (
+    <div className="p-8 max-w-7xl mx-auto space-y-8">
+        <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Skeleton className="h-64 rounded-xl" />
+            <Skeleton className="h-64 rounded-xl" />
+        </div>
     </div>
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <Skeleton className="h-[350px] rounded-xl" />
-      <Skeleton className="h-[350px] rounded-xl" />
-    </div>
-  </div>
 );
 
 export default Stats;

@@ -171,39 +171,47 @@ const MyOrders = () => {
                         {order.payment_status === 'paid' ? "PAID" : "UNPAID"}
                       </div>
                     </TableCell>
+                    
+                    {/* --- ACTIONS COLUMN --- */}
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        {order.status !== 'cancelled' && (
+                        
+                        {/* Condition 1: Order must be 'pending' to show any buttons.
+                           Condition 2: Payment must NOT be 'paid' to show any buttons.
+                        */}
+                        {order.status === 'pending' && order.payment_status !== 'paid' ? (
                           <>
-                            {order.status === 'pending' && order.payment_status !== 'paid' && (
-                              <Button
-                                size="sm"
-                                className="bg-primary hover:bg-primary/90 h-8"
-                                onClick={() => handlePayment(order)}
-                                disabled={isPaymentLoading === order._id}>
-                                {isPaymentLoading === order._id ? (
-                                  <Loader2 className="w-3 h-3 animate-spin mr-1" />
-                                ) : (
-                                  <CreditCard className="w-3 h-3 mr-1" />
-                                )}
-                                Pay Now
-                              </Button>
-                            )}
-                            {order.status !== 'pending' && (
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                className="h-8"
-                                onClick={() => setCancelId(order._id)}>
-                                <Ban className="w-3 h-3 mr-1" />
-                                Cancel
-                              </Button>
-                            )}
+                            {/* Pay Now Button */}
+                            <Button
+                              size="sm"
+                              className="bg-primary hover:bg-primary/90 h-8"
+                              onClick={() => handlePayment(order)}
+                              disabled={isPaymentLoading === order._id}>
+                              {isPaymentLoading === order._id ? (
+                                <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                              ) : (
+                                <CreditCard className="w-3 h-3 mr-1" />
+                              )}
+                              Pay Now
+                            </Button>
+
+                            {/* Cancel Button */}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              className="h-8"
+                              onClick={() => setCancelId(order._id)}>
+                              <Ban className="w-3 h-3 mr-1" />
+                              Cancel
+                            </Button>
                           </>
+                        ) : (
+                          // Logic for other statuses or if Paid
+                          order.status === 'cancelled' && (
+                             <span className="text-xs text-muted-foreground italic pr-2">Order Cancelled</span>
+                          )
                         )}
-                        {order.status === 'cancelled' && (
-                          <span className="text-xs text-muted-foreground italic pr-2">Order Cancelled</span>
-                        )}
+
                       </div>
                     </TableCell>
                   </TableRow>
@@ -223,24 +231,26 @@ const MyOrders = () => {
           </Table>
         </CardContent>
       </Card>
-      <AlertDialog open={!!cancelId} onOpenChange={(open) => !open && setCancelId(null)}>
+
+      <AlertDialog open={!!cancelId} onOpenChange={() => setCancelId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel Order</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this order? This action cannot be undone.
+              This action cannot be undone. This will permanently cancel your order.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep Order</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogCancel>No, Keep Order</AlertDialogCancel>
+            <AlertDialogAction 
               onClick={handleCancel}
-              className="bg-red-600 hover:bg-red-700">
-              Yes, Cancel it
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600">
+              Yes, Cancel Order
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
     </div>
   );
 };

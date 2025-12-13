@@ -55,8 +55,8 @@ const Login = () => {
     }
   };
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
-      <div className="hidden bg-muted lg:block relative h-full overflow-hidden">
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen mt-9">
+      <div className="hidden bg-muted lg:block relative h-full overflow-hidden ">
         <img
           src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2000&auto=format&fit=crop"
           alt="Library"

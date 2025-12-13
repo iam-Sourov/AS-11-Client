@@ -122,7 +122,7 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen mt-9">
       <div className="hidden bg-muted lg:block relative h-full overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2000&auto=format&fit=crop"
