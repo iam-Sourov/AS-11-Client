@@ -24,8 +24,10 @@ const XLogo = ({ className }) => (
 );
 const Footer = () => {
   return (
-    <footer className="bg-zinc-950 border-t border-zinc-900 pt-16 pb-8">
-      <div className="container mx-auto px-6 md:px-12">
+    <footer className="relative w-full p-2  overflow-hidden bg-zinc-900 text-white shadow-xl">
+      <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
+      <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
+      <div className="container mx-auto p-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-2 text-white">

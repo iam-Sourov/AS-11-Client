@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   Book,
   Home,
@@ -7,7 +8,8 @@ import {
   LayoutDashboard,
   ShoppingBag,
   ReceiptText,
-  Heart
+  Heart,
+  LogOut 
 } from "lucide-react";
 import {
   Sidebar,
@@ -20,12 +22,22 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button"; // Import the Shadcn Button
 import { NavLink } from "react-router";
 import useRole from "../../hooks/useRole";
+import { AuthContext } from "../../contexts/AuthContext";
 
 function AppSidebar() {
   const [role] = useRole();
-  console.log(role);
+  const { LogOut:logoutuser } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logoutuser()
+      .then(() => {
+        console.log("Logged out successfully");
+      })
+      .catch((err) => console.error(err));
+  };
 
   const adminItems = [
     { title: "Home", to: "/", icon: Home },
@@ -126,25 +138,21 @@ function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-
-        {/* <SidebarGroup>
-          <SidebarGroupLabel>General</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {userItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.to}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup> */}
       </SidebarContent>
+
+      {/* Footer Section with Shadcn Destructive Button */}
+      <SidebarFooter>
+        <div className="p-2">
+          <Button 
+            variant="destructive" 
+            className="w-full justify-start gap-2"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </Button>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }

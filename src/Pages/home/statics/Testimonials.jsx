@@ -39,10 +39,12 @@ const Testimonials = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-6">
           {testimonials.map((review, i) => (
-            <Card key={i} className="relative bg-background border-none shadow-sm hover:shadow-md transition-shadow">
+            <Card key={i} className="relative w-full overflow-hidden rounded-3xl bg-zinc-900 text-white shadow-xl border-none hover:shadow-md transition-shadow">
+              <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
+              <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
               <CardContent className="pt-12 px-8 pb-8">
                 <div className="absolute top-6 left-8">
-                  <Quote className="h-8 w-8 text-primary fill-primary/10 rotate-180" />
+                  <Quote className="h-8 w-8  fill-primary/10 rotate-180" />
                 </div>
                 <div className="flex gap-1 mb-6">
                   {[...Array(5)].map((_, i) => (
@@ -62,7 +64,7 @@ const Testimonials = () => {
                   </Avatar>
                   <div>
                     <h4 className="font-semibold text-sm">{review.name}</h4>
-                    <p className="text-xs text-muted-foreground">{review.role}</p>
+                    <p className="text-xs ">{review.role}</p>
                   </div>
                 </div>
               </CardContent>

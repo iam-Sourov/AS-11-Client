@@ -16,11 +16,13 @@ import Container from '../../shared/container';
 const Home = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <section className="relative pt-24 pb-10 md:pt-40 md:pb-20 overflow-hidden">
+      <section className="relative pt-24 pb-12 md:pt-40 md:pb-24 overflow-hidden">
         <div className="container mx-auto px-4 text-center z-10 relative">
+          
           <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 mb-6">
             New Arrivals In Stock
           </div>
+          
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-7xl mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
             Your Next Great Read <br className="hidden sm:block" />
             <span className="text-primary">Is Waiting For You.</span>
@@ -30,19 +32,24 @@ const Home = () => {
             Discover a curated collection of thousands of books. From timeless classics
             to modern bestsellers, manage your library in one beautiful place.
           </p>
+          
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-20 animate-in fade-in slide-in-from-bottom-10 duration-1000">
             <Button size="lg" className="h-12 px-8 rounded-full text-base" asChild>
               <Link to="/all-books">Start Exploring</Link>
             </Button>
           </div>
         </div>
-        <div className="relative w-full opacity-90 hover:opacity-100 transition-opacity duration-500">
+        
+        {/* Slider */}
+        <div className="relative w-full opacity-90 hover:opacity-100 transition-opacity duration-500 px-4 md:px-0">
           <Slider />
         </div>
       </section>
       <div className="border-y bg-muted/20">
         <Container>
-          <Stats />
+            <div className="py-12">
+                <Stats />
+            </div>
         </Container>
       </div>
       <section className="py-16 md:py-24">
@@ -55,7 +62,7 @@ const Home = () => {
           <LatestBooks />
         </Container>
       </section>
-      <section className="bg-muted/30 py-20 md:py-32">
+      <section className="bg-muted/30 py-16 md:py-24">
         <Container>
           <BookCourier />
         </Container>

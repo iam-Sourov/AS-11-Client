@@ -54,7 +54,9 @@ const Map = () => {
   ];
 
   return (
-    <section className="w-full p-6 rounded-2xl shadow-md mt-10">
+    <section className="relative w-full overflow-hidden rounded-3xl bg-zinc-900 text-white shadow-xl p-6 mt-10">
+      <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
+      <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
       <h2 className="text-3xl font-bold mb-6 text-center">Our Delivery Coverage</h2>
       <div className="w-full h-[400px] rounded-2xl overflow-hidden shadow-lg">
         <MapContainer center={[23.8103, 90.4125]} zoom={7} className="w-full h-full">
