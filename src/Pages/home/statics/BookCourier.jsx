@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from "framer-motion";
-import { Truck, Library, Wallet, ShieldCheck, Clock, HeartHandshake } from "lucide-react";
+import { Truck, Library, Wallet } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const features = [

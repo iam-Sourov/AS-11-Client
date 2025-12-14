@@ -19,6 +19,7 @@ import PaymentSuccess from "../Pages/dashboards/payment/PaymentSuccess";
 import PaymentCancel from "../Pages/dashboards/payment/PaymentCancel";
 import MyWishlist from "../Pages/dashboards/user/MyWishlist";
 import BookDetails from "../Pages/home/bookDetails/BookDetails";
+import ErrorPage from "../Pages/Error/ErrorPage";
 
 
 const router = createBrowserRouter([
@@ -128,7 +129,7 @@ const router = createBrowserRouter([
     },
     {
         path: "*",
-        element: <div className="text-3xl font-bold underline">404 Not Found</div>
+        element: <ErrorPage></ErrorPage>
     }
 ]);
 

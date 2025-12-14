@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AuthContext } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
+
 import { BookOpen, Menu } from 'lucide-react';
 
 const Navbar = () => {
@@ -54,19 +55,18 @@ const Navbar = () => {
                             Dashboard
                         </NavLink>
                     )}
-                    {!user && (
-                        <div className="flex items-center gap-4">
-                            <NavLink to="/login" className={getLinkClass}>
-                                Login
-                            </NavLink>
-                            <NavLink to="/register" className={getLinkClass}>
-                                Register
-                            </NavLink>
-                        </div>
-                    )}
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                     <AnimatedThemeToggler />
+                    {!user && <>
+                        <Button className=''>
+                            <Link to={'/login'}>Login</Link>
+                        </Button>
+                        <Button className=''>
+                            <Link to={'/register'}>Getting started</Link>
+                        </Button>
+                    </>
+                    }
                     {user && (
                         <div className="hidden md:flex items-center gap-3">
                             <Link to={'/dashboard/my-profile'}>

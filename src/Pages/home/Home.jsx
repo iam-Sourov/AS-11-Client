@@ -16,7 +16,7 @@ import Container from '../../shared/container';
 const Home = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <section className="relative pt-24 pb-12 md:pt-40 md:pb-24 overflow-hidden">
+      <section className="relative pt-24 pb-10 md:pt-40 md:pb-20 overflow-hidden">
         <div className="container mx-auto px-4 text-center z-10 relative">
           <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 mb-6">
             New Arrivals In Stock
@@ -26,7 +26,7 @@ const Home = () => {
             <span className="text-primary">Is Waiting For You.</span>
           </h1>
 
-          <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground mb-10 leading-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Discover a curated collection of thousands of books. From timeless classics
             to modern bestsellers, manage your library in one beautiful place.
           </p>
