@@ -34,7 +34,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { AuthContext } from "../../../contexts/AuthContext";
 
@@ -171,17 +170,10 @@ const MyOrders = () => {
                         {order.payment_status === 'paid' ? "PAID" : "UNPAID"}
                       </div>
                     </TableCell>
-                    
-                    {/* --- ACTIONS COLUMN --- */}
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        
-                        {/* Condition 1: Order must be 'pending' to show any buttons.
-                           Condition 2: Payment must NOT be 'paid' to show any buttons.
-                        */}
                         {order.status === 'pending' && order.payment_status !== 'paid' ? (
                           <>
-                            {/* Pay Now Button */}
                             <Button
                               size="sm"
                               className="bg-primary hover:bg-primary/90 h-8"
@@ -194,8 +186,6 @@ const MyOrders = () => {
                               )}
                               Pay Now
                             </Button>
-
-                            {/* Cancel Button */}
                             <Button
                               size="sm"
                               variant="destructive"
@@ -206,7 +196,6 @@ const MyOrders = () => {
                             </Button>
                           </>
                         ) : (
-                          // Logic for other statuses or if Paid
                           order.status === 'cancelled' && (
                              <span className="text-xs text-muted-foreground italic pr-2">Order Cancelled</span>
                           )
@@ -231,7 +220,6 @@ const MyOrders = () => {
           </Table>
         </CardContent>
       </Card>
-
       <AlertDialog open={!!cancelId} onOpenChange={() => setCancelId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

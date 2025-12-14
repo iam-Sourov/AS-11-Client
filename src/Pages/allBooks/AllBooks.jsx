@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
 import { Search, X, Star, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
@@ -42,7 +41,7 @@ const AllBooks = () => {
             placeholder="Search title or author..."
             className="pl-9 pr-9 bg-background h-11"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}/>
+            onChange={(e) => setSearch(e.target.value)} />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
               <X className="h-4 w-4" />
@@ -66,13 +65,7 @@ const AllBooks = () => {
                     src={book.image}
                     alt={book.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"/>
-                  <div className="absolute top-2 right-2 -translate-y-2.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <Badge variant="secondary" className="flex items-center bg-white/90 hover:bg-white gap-1 backdrop-blur-sm shadow-sm text-foreground">
-                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      <span className="text-xs font-semibold">{book.rating}</span>
-                    </Badge>
-                  </div>
+                    loading="lazy" />
                   <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
                     <Button size="sm" className="w-full shadow-lg">
                       View Details
@@ -86,10 +79,14 @@ const AllBooks = () => {
                   <p className="text-sm text-muted-foreground line-clamp-1">
                     {book.author}
                   </p>
-                  <div className="pt-1">
+                  <div className="flex items-center justify-between pt-2">
                     <span className="font-bold text-lg text-primary">
                       ${book.price}
                     </span>
+                    <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-0.5 rounded-full">
+                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                      <span className="text-xs font-semibold">{book.rating}</span>
+                    </div>
                   </div>
                 </div>
               </div>

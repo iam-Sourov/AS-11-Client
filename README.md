@@ -1,16 +1,46 @@
-# React + Vite
+# BookLibrary – Library-to-Home Delivery System -
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Intro--
+BookLibrary- is a comprehensive library management and delivery system designed to bridge the gap between physical libraries and readers. It allows users to borrow books online and have them delivered directly to their doorstep, eliminating the need for physical visits.
+The platform features a multi-role ecosystem (User, Librarian, Admin) where librarians can manage their catalog, users can track orders, and admins maintain system integrity.
 
-Currently, two official plugins are available:
+Live Demo: https://library-bookhive.vercel.app/
+Server Repository:** [Insert Server Repo Link Here]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## Key Features--
+For Users
+    - **Browse & Search:** Explore a curated collection of books with advanced search and sorting by price.
+    - **Book Details:** View detailed information, ratings, and reviews before borrowing.
+    - **Wishlist:** Save favorite books for later.
+    - **Order Management:** seamless ordering process with Real-time status tracking (Pending → Shipped → Delivered).
+    - **Payment Integration:** Secure "Pay Now" functionality for pending orders.
+    - **Profile Management:** Update personal details and profile picture.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+For Librarians
+    -Catalog Management: Add new books, edit existing details, and manage publication status (Publish/Unpublish).
+    -Order Fulfillment: View incoming orders and update statuses (Shipped/Delivered).
+    -My Books: A dedicated dashboard to track books added by the specific librarian.
 
-## Expanding the ESLint configuration
+For Admins
+    -User Management: Promote users to Librarian or Admin roles.
+    -System Oversight: Manage all books across the platform, including the ability to delete or unpublish inappropriate content.
+    -Stats Dashboard: Visualize platform data (Total Users, Books, Orders).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies Used--
+Frontend
+    -Framework: React.js (Vite)
+    -Styling: Tailwind CSS, Shadcn UI
+    -State Management: TanStack Query (React Query) for server state & caching
+    -Routing: React Router
+    -Maps: React Leaflet
+    -Animations: Framer Motion
+    -Icons: Lucide React
+
+Backend
+    -Runtime: Node.js
+    -Framework: Express.js
+    -Database: MongoDB
+    -Authentication: Firebase Auth
+    -Payment: Stripe
+

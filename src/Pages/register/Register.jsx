@@ -6,7 +6,6 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { Eye, EyeOff, Loader2, Camera, User, BookOpen } from 'lucide-react';
 import { toast } from "sonner";
 import axios from 'axios';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

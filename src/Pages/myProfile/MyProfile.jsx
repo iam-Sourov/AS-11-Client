@@ -2,12 +2,10 @@ import React, { useContext, useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { Camera, Loader2, Mail, User, ShieldCheck } from "lucide-react";
-
 import { AuthContext } from "../../contexts/AuthContext";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useRole from "../../hooks/useRole";
-
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

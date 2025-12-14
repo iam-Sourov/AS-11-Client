@@ -36,19 +36,13 @@ const Stats = () => {
 
     return (
         <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
-            
-            {/* Header */}
             <div>
                 <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
                 <p className="text-muted-foreground mt-1">
                     Welcome back. Here's what's happening in your library today.
                 </p>
             </div>
-
-            {/* --- TOP SUMMARY CARDS --- */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                {/* Total Books */}
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Books</CardTitle>
@@ -59,8 +53,6 @@ const Stats = () => {
                         <p className="text-xs text-muted-foreground">Available in library</p>
                     </CardContent>
                 </Card>
-
-                {/* Total Users */}
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -71,8 +63,6 @@ const Stats = () => {
                         <p className="text-xs text-muted-foreground">Registered accounts</p>
                     </CardContent>
                 </Card>
-
-                {/* Total Orders */}
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
@@ -84,19 +74,13 @@ const Stats = () => {
                     </CardContent>
                 </Card>
             </div>
-
-            {/* --- DETAILED BREAKDOWN --- */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* USER DEMOGRAPHICS CARD */}
                 <Card className="col-span-1">
                     <CardHeader>
                         <CardTitle>User Distribution</CardTitle>
                         <CardDescription>Breakdown of roles across the platform.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        
-                        {/* Users */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -105,10 +89,8 @@ const Stats = () => {
                                 </div>
                                 <span className="text-muted-foreground">{stats.users}</span>
                             </div>
-                            <Progress value={getPercent(stats.users, stats.totalUsers)} className="h-2 [&>*]:bg-blue-500" />
+                            <Progress value={getPercent(stats.users, stats.totalUsers)} className="h-2 *:bg-blue-500" />
                         </div>
-
-                        {/* Librarians */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -117,10 +99,8 @@ const Stats = () => {
                                 </div>
                                 <span className="text-muted-foreground">{stats.librarians}</span>
                             </div>
-                            <Progress value={getPercent(stats.librarians, stats.totalUsers)} className="h-2 [&>*]:bg-orange-500" />
+                            <Progress value={getPercent(stats.librarians, stats.totalUsers)} className="h-2 *:bg-orange-500" />
                         </div>
-
-                        {/* Admins */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -129,21 +109,16 @@ const Stats = () => {
                                 </div>
                                 <span className="text-muted-foreground">{stats.admins}</span>
                             </div>
-                            <Progress value={getPercent(stats.admins, stats.totalUsers)} className="h-2 [&>*]:bg-violet-500" />
+                            <Progress value={getPercent(stats.admins, stats.totalUsers)} className="h-2 *:bg-violet-500" />
                         </div>
-
                     </CardContent>
                 </Card>
-
-                {/* ORDER STATUS CARD */}
                 <Card className="col-span-1">
                     <CardHeader>
                         <CardTitle>Order Statistics</CardTitle>
                         <CardDescription>Current status of all transactions.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-
-                        {/* Completed */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -152,10 +127,8 @@ const Stats = () => {
                                 </div>
                                 <span className="text-muted-foreground">{stats.completedOrders}</span>
                             </div>
-                            <Progress value={getPercent(stats.completedOrders, stats.totalOrders)} className="h-2 [&>*]:bg-emerald-500" />
+                            <Progress value={getPercent(stats.completedOrders, stats.totalOrders)} className="h-2 *:bg-emerald-500" />
                         </div>
-
-                        {/* Pending */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -164,10 +137,8 @@ const Stats = () => {
                                 </div>
                                 <span className="text-muted-foreground">{stats.pendingOrders}</span>
                             </div>
-                            <Progress value={getPercent(stats.pendingOrders, stats.totalOrders)} className="h-2 [&>*]:bg-amber-500" />
+                            <Progress value={getPercent(stats.pendingOrders, stats.totalOrders)} className="h-2 *:bg-amber-500" />
                         </div>
-
-                        {/* Cancelled */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -176,9 +147,8 @@ const Stats = () => {
                                 </div>
                                 <span className="text-muted-foreground">{stats.cancelledOrders}</span>
                             </div>
-                            <Progress value={getPercent(stats.cancelledOrders, stats.totalOrders)} className="h-2 [&>*]:bg-red-500" />
+                            <Progress value={getPercent(stats.cancelledOrders, stats.totalOrders)} className="h-2 *:bg-red-500" />
                         </div>
-
                     </CardContent>
                 </Card>
             </div>

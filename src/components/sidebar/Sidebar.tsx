@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button"; // Import the Shadcn Button
+import { Button } from "@/components/ui/button";
 import { NavLink } from "react-router";
 import useRole from "../../hooks/useRole";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -139,8 +139,6 @@ function AppSidebar() {
           </SidebarGroup>
         )}
       </SidebarContent>
-
-      {/* Footer Section with Shadcn Destructive Button */}
       <SidebarFooter>
         <div className="p-2">
           <Button 

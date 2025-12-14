@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
-
-// Components
 import Map from './map/Map';
 import LatestBooks from './latestBooks/LatestBooks';
 import BookCourier from './statics/BookCourier';

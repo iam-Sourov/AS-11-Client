@@ -2,13 +2,11 @@ import React, { useContext, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  MoreHorizontal,
   Ban,
   CheckCircle2,
   Truck,
   Package,
   Clock,
-  AlertCircle,
 } from 'lucide-react';
 
 import {
@@ -45,7 +43,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
 import { AuthContext } from '../../../contexts/AuthContext';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
@@ -56,7 +53,7 @@ const Orders = () => {
 
   const [cancelId, setCancelId] = useState(null)
 
-  const { data: orders = [], isLoading,refetch } = useQuery({
+  const { data: orders = [], isLoading, refetch } = useQuery({
     queryKey: ['librarian-orders', user?.displayName],
     queryFn: async () => {
       const res = await axiosSecure.get(`/orders/${user.displayName}`);
@@ -125,10 +122,7 @@ const Orders = () => {
             {orders.length > 0 ? (
               orders.map((order) => {
                 const { icon: StatusIcon, color } = getStatusConfig(order.status);
-
-                // Logic to lock dropdown if Cancelled or Delivered (Final States)
                 const isFinalState = order.status === 'cancelled' || order.status === 'delivered';
-
                 return (
                   <TableRow key={order._id} className="group">
                     <TableCell>
@@ -175,14 +169,11 @@ const Orders = () => {
                         </Badge>
                       </div>
                     </TableCell>
-
-                    {/* --- UPDATED STATUS SELECT LOGIC --- */}
                     <TableCell>
                       <Select
                         defaultValue={order.status}
                         onValueChange={(val) => handleStatusChange(order._id, val)}
-                        disabled={isFinalState}
-                      >
+                        disabled={isFinalState}>
                         <SelectTrigger className={`w-[140px] h-9 border-0 ring-0 focus:ring-0 shadow-none px-2.5 ${color} ${isFinalState ? 'opacity-70 cursor-not-allowed' : ''}`}>
                           <div className="flex items-center gap-2">
                             <StatusIcon className="h-3.5 w-3.5" />
@@ -190,33 +181,24 @@ const Orders = () => {
                           </div>
                         </SelectTrigger>
                         <SelectContent>
-                          {/* Pending Option: Disabled if we moved past it */}
                           <SelectItem
                             value="pending"
-                            disabled={order.status === 'shipped' || order.status === 'delivered'}
-                          >
+                            disabled={order.status === 'shipped' || order.status === 'delivered'}>
                             Pending
                           </SelectItem>
-
-                          {/* Shipped Option: Disabled if delivered (can't go back) */}
                           <SelectItem
                             value="shipped"
-                            disabled={order.status === 'delivered'}
-                          >
+                            disabled={order.status === 'delivered'}>
                             Shipped
                           </SelectItem>
-
-                          {/* Delivered Option: Disabled if still Pending (Must ship first) */}
                           <SelectItem
                             value="delivered"
-                            disabled={order.status === 'pending'}
-                          >
+                            disabled={order.status === 'pending'}>
                             Delivered
                           </SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
-
                     <TableCell className="text-right">
                       {order.status !== 'cancelled' && order.status === 'pending' ? (
                         <Button
@@ -247,8 +229,6 @@ const Orders = () => {
           </TableBody>
         </Table>
       </div>
-
-      {/* Cancel Confirmation Dialog */}
       <AlertDialog open={!!cancelId} onOpenChange={(open) => !open && setCancelId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

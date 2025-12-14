@@ -30,13 +30,6 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            if (currentUser) {
-                // Get token if needed
-                // const token = await currentUser.getIdToken();
-                // localStorage.setItem('access-token', token);
-            } else {
-                // localStorage.removeItem('access-token');
-            }
             setLoading(false);
         });
         return () => unsubscribe();

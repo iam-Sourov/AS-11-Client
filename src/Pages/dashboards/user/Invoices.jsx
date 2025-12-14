@@ -11,8 +11,6 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";

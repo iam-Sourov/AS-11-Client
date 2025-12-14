@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const LatestBooks = () => {
@@ -125,6 +124,7 @@ const LatestBooks = () => {
     </section>
   );
 };
+
 const BookCard = ({ book, onView }) => (
   <div className="group flex flex-col gap-3 cursor-pointer" onClick={onView}>
     <div className="relative aspect-2/3 overflow-hidden rounded-lg bg-muted shadow-sm transition-all group-hover:shadow-md">
@@ -132,12 +132,6 @@ const BookCard = ({ book, onView }) => (
         src={book.image}
         alt={book.title}
         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-      <div className="absolute top-2 right-2 -translate-y-2.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-        <Badge variant="secondary" className="flex items-center bg-amber-400/10 gap-1 backdrop-blur-sm shadow-sm">
-          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-          <span className="text-xs font-semibold text-black">{book.rating}</span>
-        </Badge>
-      </div>
       <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
         <Button size="sm" className="w-full shadow-lg">
           Quick View
@@ -151,14 +145,19 @@ const BookCard = ({ book, onView }) => (
       <p className="text-sm text-muted-foreground line-clamp-1">
         {book.author}
       </p>
-      <div className="pt-1">
+      <div className="pt-2 flex items-center justify-between">
         <span className="font-bold text-lg text-primary">
           ${book.price}
         </span>
+        <div className="flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded-full">
+          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+          <span className="text-xs font-semibold">{book.rating}</span>
+        </div>
       </div>
     </div>
   </div>
 );
+
 const LoadingSkeleton = () => (
   <section className="py-16 px-4 container mx-auto">
     <div className="flex justify-between items-center mb-10">
