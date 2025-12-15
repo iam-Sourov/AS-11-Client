@@ -97,9 +97,6 @@ const MyBooks = () => {
     };
 
     if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
-    if (errors) {
-        return <div>Error</div>
-    }
     return (
         <div className="container mx-auto p-6 space-y-8">
             <h2 className="text-3xl font-bold">My Books</h2>
